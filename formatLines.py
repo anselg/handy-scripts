@@ -1,9 +1,5 @@
 #! /usr/bin/env python
 
-# Why the FUCK does anyone abuse spaces in such an unconscionable manner?! Fuck! AAAAAHHHHH.
-# Ahem, ... 
-# Back to work. 
-
 import sys
 
 num_tabs = 0;
