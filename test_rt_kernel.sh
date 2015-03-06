@@ -56,11 +56,11 @@ echo $GRAPHICS_DRIVER
 
 # Run latency test under dynamic load
 #stress --cpu 2 --vm 1 --hdd 1 --timeout 1800 & 
-sudo /usr/xenomai/bin/./latency -s -h -p 100 -T 10 -g histdata.txt | tee test_rt_kernel.log
+sudo /usr/xenomai/bin/./latency -s -h -p 100 -B 1 -H 200000 -T 10 -g histdata.txt | tee test_rt_kernel.log
 
 # Check if R is installed
-#hash Rscript 2>/dev/null || { echo >&2 "R is needed for me to plot stats.\nYou can always do that yourself, too."; exit 0; }
+hash Rscript 2>/dev/null || { echo >&2 "R is needed for me to plot stats.\nYou can always do that yourself, too."; exit 0; }
 
-#Rscript analyzeHistdata.r
+Rscript analyzeHistdata.r
 
 exit 0
