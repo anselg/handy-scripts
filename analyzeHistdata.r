@@ -19,12 +19,6 @@ data.raw = read.table("histdata.txt", header=F, col.names=c("Latency", "Count"))
 data.stats = data.raw
 data.stats$Count = data.raw$Count - 1
 
-#data.long = c()
-#for ( stats_idx in 1:length(data.stats$Count) ) {
-#	data.long = c(data.long, rep(data.stats$Latency[stats_idx], data.stats$Count[stats_idx]))
-#}
-#data.long = data.frame(Latency=data.long)
-
 # Put stats into bin_size ns bins. 
 bin_size = 200 # bins are to make the histogram look better
 data.hist = data.frame( Latency = seq( 0, max(data.stats$Latency) * 
@@ -41,6 +35,9 @@ for ( stats_idx in 1:length(data.stats$Latency) ) {
 }
 data.hist$Count = data.hist$Count + 1
 
+# Create function to show probability of losing RT as a function of RT period over 1 hr...
+#data.prob_rt
+
 plot.hist = ggplot(data = data.hist, aes(x=Latency, y=Count)) + 
 	geom_bar(stat="identity") + 
 	scale_y_log10(
@@ -52,10 +49,4 @@ plot.hist = ggplot(data = data.hist, aes(x=Latency, y=Count)) +
 	              "Running at", rate, "kHz", sep=" ")) + 
 	xlab(expression(paste("Latency (", mu, "s)"))) 
 
-#plot.box = ggplot(data = data.long[data.long$Latency < 1.5], aes(x="",y=Latency)) + 
-	geom_boxplot()
-
-#plot.all = multiplot(plotlist = c(plot.hist, plot.box), cols=2)
-
 ggsave(filename="histplot.png", plot=plot.hist)
-#ggsave(filename="histplot.png", plot=plot.box)
