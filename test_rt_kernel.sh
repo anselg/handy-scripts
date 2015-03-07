@@ -43,22 +43,21 @@ DISTRO_NAME=`lsb_release -is`
 DISTRO_VERSION=`lsb_release -rs`
 RT_KERNEL=`uname -r`
 HOSTNAME=`uname -n`
-RATE_KHZ=10
 PROCESSOR=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -d":" -f2 | \
             sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 GRAPHICS_CARD=$(lspci | grep VGA | uniq | cut -d":" -f3 | \
                 sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 GRAPHICS_DRIVER=$(sudo lshw -c display | grep configuration | cut -d":" -f2 | cut -d"=" -f2 | cut -d" " -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 
-#echo $PROCESSOR
-#echo $GRAPHICS_CARD
-#echo $GRAPHICS_DRIVER
+# Set up variables for run
+TIME=20 # duration of run (s)
+RT_PERIOD=100
 
 sudo bash -c "echo 0 > /proc/xenomai/latency" # necessary for histogram to work
 
 # Run latency test under dynamic load
 #stress --cpu 2 --vm 1 --hdd 1 --timeout 1800 & 
-sudo /usr/xenomai/bin/./latency -s -h -p 100 -B 1 -H 200000 -T 120 -g histdata.txt | tee test_rt_kernel.log
+sudo /usr/xenomai/bin/./latency -s -h -p $RT_PERIOD -B 1 -H 200000 -T $TIME -g histdata.txt | tee test_rt_kernel.log
 
 # Check if R is installed
 hash Rscript 2>/dev/null || { echo >&2 "R is needed for me to plot stats.\nYou can always do that yourself, too."; exit 0; }
