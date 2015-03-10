@@ -25,6 +25,7 @@ echo "----->Checking for dependencies needed to run stress test."
 #if ! $(dpkg-query -Wf'${db:Status-abbrev}' "inxi" 2>/dev/null | grep -q '^i'); 
 #	then sudo apt-get -y install inxi
 #fi
+
 if ! $(dpkg-query -Wf'${db:Status-abbrev}' "stress" 2>/dev/null | grep -q '^i'); 
 	then sudo apt-get -y install stress
 fi
@@ -37,31 +38,35 @@ echo "----->Running latency test under load. Please wait 30 minutes."
 echo "----->Do not interrupt."
 echo "----->If you do interrupt, stop stressing the system by running:"
 echo "      $ pkill stress"
+echo ""
 
 # Get system information
-DISTRO_NAME=`lsb_release -is`
-DISTRO_VERSION=`lsb_release -rs`
-RT_KERNEL=`uname -r`
+#DISTRO_NAME=`lsb_release -is`
+#DISTRO_VERSION=`lsb_release -rs`
+DISTRO=$(lsb_release -irs)
 HOSTNAME=`uname -n`
+RT_KERNEL=`uname -r`
 PROCESSOR=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -d":" -f2 | \
             sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 GRAPHICS_CARD=$(lspci | grep VGA | uniq | cut -d":" -f3 | \
                 sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
-GRAPHICS_DRIVER=$(sudo lshw -c display | grep configuration | cut -d":" -f2 | cut -d"=" -f2 | cut -d" " -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
+GRAPHICS_DRIVER=$(lshw -c display | grep configuration | cut -d":" -f2 | cut -d"=" -f2 | cut -d" " -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 
 # Set up variables for run
 TIME=20 # duration of run (s)
 RT_PERIOD=100
+RATE=$(expr 1000 / $RT_PERIOD) # Convert RT period to freq in kHz
 
-sudo bash -c "echo 0 > /proc/xenomai/latency" # necessary for histogram to work
+#sudo bash -c "echo 0 > /proc/xenomai/latency" # necessary for histogram to work
 
 # Run latency test under dynamic load
-#stress --cpu 2 --vm 1 --hdd 1 --timeout 1800 & 
+stress --cpu 2 --vm 1 --hdd 1 --timeout 1800 & 
 sudo /usr/xenomai/bin/./latency -s -h -p $RT_PERIOD -B 1 -H 200000 -T $TIME -g histdata.txt | tee test_rt_kernel.log
 
 # Check if R is installed
 hash Rscript 2>/dev/null || { echo >&2 "R is needed for me to plot stats.\nYou can always do that yourself, too."; exit 0; }
 
-Rscript analyzeHistdata.r
+#echo $DISTRO $HOSTNAME $RT_KERNEL $PROCESSOR $GRAPHICS_CARD $GRAPHICS_DRIVER $RATE
+Rscript analyzeHistdata.r "$DISTRO" "$HOSTNAME" "$RT_KERNEL" "$PROCESSOR" "$GRAPHICS_CARD" "$GRAPHICS_DRIVER" "$RATE"
 
 exit 0
