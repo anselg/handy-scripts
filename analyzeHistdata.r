@@ -4,8 +4,23 @@ options(warn=-1)
 args = commandArgs(trailingOnly = T)
 
 # Check if needed packages are installed. Otherwise, exit. 
-if( !(require(ggplot2)&&require(scales)&&require(plyr)&&require(gridExtra)) ) {
-	print("Look. You really need to install 'ggplot2', 'plyr', 'gridExtra', and 'scales' to do this.")
+if( !(require(ggplot2)&&require(scales)&&require(plyr)&&require(plot3d)) ) {
+   message("I need some R packages installed. (ggplot2, plyr, gridExtra, and scales)")
+   message(prompt="Want me to install them? (y/N)")
+   val <- scan("stdin", character(), n=1)
+   if ((val == "y")||(val == "Y")) {
+      install.packages("ggplot2", repos="http://watson.nci.nih.gov/cran_mirror/")
+      install.packages("scales", repos="http://watson.nci.nih.gov/cran_mirror/")
+      install.packages("plyr", repos="http://watson.nci.nih.gov/cran_mirror/")
+      install.packages("gridExtra", repos="http://watson.nci.nih.gov/cran_mirror/")
+
+      require(ggplot2)
+      require(scales)
+      require(plyr)
+      require(gridExtra)
+   } else {
+      stop("Look, you need to install 'ggplot2', 'plyr', 'gridExtra', and 'scales' to do this.")
+   }
 }
 
 # Set parameters passed to script from command line / bash script
@@ -50,7 +65,7 @@ data.hist$Count = data.hist$Count + 1
 # Plot p(stay in RT) from 1 kHz to 50 kHz
 #    P(no overrun | data) ^ (Frequency * 1 hr)
 min_rate = 1
-max_rate = 50
+max_rate = 66.7
 data.prob_rt = data.frame("Frequency"=seq(min_rate, max_rate, .01))
 data.prob_rt = ddply(data.prob_rt, "Frequency", function(x) {
 	prob_rt =  (1 - sum( data.stats$Latency[data.stats$Latency > 1000/x$Frequency] * 
@@ -81,7 +96,7 @@ plot.summary = qplot(1:10, 1:10, geom = "blank") +
 			panel.margin = element_blank() ) +
    annotation_custom(grob = tableGrob(data.summary, core.just="left", show.colnames=F,
 	                                   row.just = "left", col.just = "left", 
-												  padding.h = unit(1,"mm"), 
+												  padding.h = unit(5,"mm"), 
                                       gpar.coretext = gpar(cex=1)), 
 	                  xmin=1, xmax=10, ymin=1, ymax=10)
 
@@ -92,7 +107,7 @@ plot.system = qplot(1:10, 1:10, geom = "blank") +
 			panel.margin = element_blank() ) +
    annotation_custom(grob = tableGrob(data.system, core.just="left", show.colnames=F,
 	                                   row.just = "left", col.just = "left", 
-												  padding.h = unit(1,"mm"), 
+												  padding.h = unit(5,"mm"), 
                                       gpar.coretext = gpar(cex=1)), 
 	                  xmin=1, xmax=10, ymin=1, ymax=10)
 
