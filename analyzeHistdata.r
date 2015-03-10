@@ -4,7 +4,7 @@ options(warn=-1)
 args = commandArgs(trailingOnly = T)
 
 # Check if needed packages are installed. Otherwise, exit. 
-if( !(require(ggplot2)&&require(scales)&&require(plyr)&&require(plot3d)) ) {
+if( !(require(ggplot2)&&require(scales)&&require(plyr)&&require(gridExtra)) ) {
    message("I need some R packages installed. (ggplot2, plyr, gridExtra, and scales)")
    message(prompt="Want me to install them? (y/N)")
    val <- scan("stdin", character(), n=1)
@@ -38,9 +38,9 @@ data.stats = data.raw
 data.stats$Count = data.raw$Count - 1 # ./latency adds 1 to all fields (prevents 0s on log plots)
 
 # Find summary stats for all points. Counts for latencies are accounted for. 
-data.summary = data.frame(Measure = c("Mean (ns)", "Std.Dev (ns)"), 
-                          Value = c(mean(data.stats$Count*data.stats$Latency), 
-								            sd(data.stats$Count*data.stats$Latency) ))
+weird_mean = sum(data.stats$Count*data.stats$Latency)/(sum(data.stats$Count))
+weird_sdev = sqrt( 1/sum(data.stats$Count) * sum(data.stats$Count*(data.stats$Latency - weird_mean)^2) )
+data.summary = data.frame(Measure = c("Mean (ns)", "Std.Dev (ns)"), Value = c(weird_mean, weird_sdev))
 
 # System info passed from command line
 data.system = data.frame(Field = c("Operating System", "Host Name", "RT Kernel", "Processor", "Graphics Card", "Graphics Driver"), Info = c(os, hostname, rt_patch, processor, graphics_card, graphics_driver) )
