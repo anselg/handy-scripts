@@ -3,20 +3,12 @@
 options(warn=-1)
 args = commandArgs(trailingOnly = T)
 
-
 # Check if needed packages are installed. Otherwise, exit. 
-if( !(require(ggplot2)&&require(scales)&&require(plyr)) ) {
-	print("Look. You really need to install 'ggplot2', 'plyr', and 'scales' to do this.")
+if( !(require(ggplot2)&&require(scales)&&require(plyr)&&require(gridExtra)) ) {
+	print("Look. You really need to install 'ggplot2', 'plyr', 'gridExtra', and 'scales' to do this.")
 }
 
-# Edit this to match your system, not mine!
-#rt_patch = "Xenomai 2.6.3"
-#processor = "i5-4570"
-#graphics_card = "AMD HD 8490"
-#graphics_driver = "Radeon"
-#os = "Debian 8"
-#rate = 10 #kHz
-
+# Set parameters passed to script from command line / bash script
 os = as.character(args[1])
 hostname = as.character(args[2])
 rt_patch = as.character(args[3])
@@ -25,11 +17,20 @@ graphics_card = as.character(args[5])
 graphics_driver = as.character(args[6])
 rate = as.integer(args[7]) # kHz
 
+# Open file and get raw data
 data.raw = read.table("histdata.txt", header=F, col.names=c("Latency", "Count"))
 data.stats = data.raw
-data.stats$Count = data.raw$Count - 1
+data.stats$Count = data.raw$Count - 1 # ./latency adds 1 to all fields (prevents 0s on log plots)
 
-# Put stats into bin_size ns bins. 
+# Find summary stats for all points. Counts for latencies are accounted for. 
+data.summary = data.frame(Measure = c("Mean (ns)", "Std.Dev (ns)"), 
+                          Value = c(mean(data.stats$Count*data.stats$Latency), 
+								            sd(data.stats$Count*data.stats$Latency) ))
+
+# System info passed from command line
+data.system = data.frame(Field = c("Operating System", "Host Name", "RT Kernel", "Processor", "Graphics Card", "Graphics Driver"), Info = c(os, hostname, rt_patch, processor, graphics_card, graphics_driver) )
+
+# Put stats into bin_size ns bins for histogram
 bin_size = 200 # bins are to make the histogram look better
 data.hist = data.frame( Latency = seq( 0, max(data.stats$Latency) * 
                                        1000 + bin_size, bin_size ) ) / 1000
@@ -47,14 +48,22 @@ data.hist$Count = data.hist$Count + 1
 
 # Create function to show probability of losing RT as a function of RT period over 1 hr...
 # Plot p(stay in RT) from 1 kHz to 50 kHz
-#nperiods = 3600 * rate
-data.prob_rt = data.frame("Frequency"=seq(1,50,.01))
-data.prob_rt$ProbRT = ddply(data.prob_rt, c("Frequency"), function(x) {
-	sum ( data.stats$Latency[data.stats$Latency > 1000/x$Frequency] * 
-	      data.stats$Count[data.stats$Latency > 1000/x$Frequency] ) / 
-	sum( data.stats$Latency * data.stats$Count ) * x$Frequency * 1000 * 3600
+#    P(no overrun | data) ^ (Frequency * 1 hr)
+min_rate = 1
+max_rate = 50
+data.prob_rt = data.frame("Frequency"=seq(min_rate, max_rate, .01))
+data.prob_rt = ddply(data.prob_rt, "Frequency", function(x) {
+	prob_rt =  (1 - sum( data.stats$Latency[data.stats$Latency > 1000/x$Frequency] * 
+	                     data.stats$Count[data.stats$Latency > 1000/x$Frequency] ) / 
+	                sum( data.stats$Latency * data.stats$Count )) ^ (x$Frequency * 1000 * 3600)
+	data.frame(ProbRT = prob_rt)
 })
-# prob( RT | Freq for 1 hr ) = count(latency less than 1/Freq)/count(all latencies) * Freq * 1 hr
+
+# Start making plots of everything. 
+plot.prob = ggplot(data = data.prob_rt, aes(x=Frequency, y=ProbRT)) + 
+	geom_point() + 
+	xlab("Frequency (kHz)") + ylab("P(Real-time over 1 hr)") + 
+	scale_x_continuous(limits = c(min_rate, max_rate)) + scale_y_continuous(limits = c(0, 1.2)) 
 
 plot.hist = ggplot(data = data.hist, aes(x=Latency, y=Count)) + 
 	geom_bar(stat="identity") + 
@@ -63,7 +72,36 @@ plot.hist = ggplot(data = data.hist, aes(x=Latency, y=Count)) +
 		labels = trans_format("log10", math_format(10^.x)) ) + 
 	scale_x_continuous(
 		breaks = round(seq(min(data.hist$Latency), max(data.hist$Latency), by = 1), 1) ) +
-	ggtitle(paste(hostname, os, "\n", rt_patch, "\n", processor, "\n", graphics_card, "\n", graphics_driver, "\n", "Running at", rate, "kHz", sep=" ")) + 
 	xlab(expression(paste("Latency (", mu, "s)"))) 
 
-ggsave(filename="histplot.png", plot=plot.hist)
+plot.summary = qplot(1:10, 1:10, geom = "blank") + 
+	theme_bw() + 
+	theme(line = element_blank(), text = element_blank(), panel.grid.major = element_blank(), 
+	      panel.grid.minor = element_blank(), panel.border = element_blank(), 
+			panel.margin = element_blank() ) +
+   annotation_custom(grob = tableGrob(data.summary, core.just="left", show.colnames=F,
+	                                   row.just = "left", col.just = "left", 
+												  padding.h = unit(1,"mm"), 
+                                      gpar.coretext = gpar(cex=1)), 
+	                  xmin=1, xmax=10, ymin=1, ymax=10)
+
+plot.system = qplot(1:10, 1:10, geom = "blank") + 
+	theme_bw() + 
+	theme(line = element_blank(), text = element_blank(), panel.grid.major = element_blank(), 
+	      panel.grid.minor = element_blank(), panel.border = element_blank(), 
+			panel.margin = element_blank() ) +
+   annotation_custom(grob = tableGrob(data.system, core.just="left", show.colnames=F,
+	                                   row.just = "left", col.just = "left", 
+												  padding.h = unit(1,"mm"), 
+                                      gpar.coretext = gpar(cex=1)), 
+	                  xmin=1, xmax=10, ymin=1, ymax=10)
+
+# Save plots to histplot.svg. Trying to save in other formats will cause you sadness. 
+svg("histplot.svg", width=12, height=9)
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(4,6), width=1, height=1))
+print(plot.system, vp = viewport(layout.pos.row = 1, layout.pos.col = 1:6))
+print(plot.hist, vp = viewport(layout.pos.row = 2:4, layout.pos.col = 1:3))
+print(plot.prob, vp = viewport(layout.pos.row = 2:3, layout.pos.col = 4:6))
+print(plot.summary, vp = viewport(layout.pos.row = 4, layout.pos.col = 4:6))
+dev.off()
