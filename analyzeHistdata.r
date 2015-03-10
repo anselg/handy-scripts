@@ -40,7 +40,7 @@ data.stats$Count = data.raw$Count - 1 # ./latency adds 1 to all fields (prevents
 # Find summary stats for all points. Counts for latencies are accounted for. 
 weird_mean = sum(data.stats$Count*data.stats$Latency)/(sum(data.stats$Count))
 weird_sdev = sqrt( 1/sum(data.stats$Count) * sum(data.stats$Count*(data.stats$Latency - weird_mean)^2) )
-data.summary = data.frame(Measure = c("Mean (ns)", "Std.Dev (ns)"), Value = c(weird_mean, weird_sdev))
+data.summary = data.frame(Measure = c("Mean (μs)", "Std.Dev (μs)"), Value = c(weird_mean, weird_sdev))
 
 # System info passed from command line
 data.system = data.frame(Field = c("Operating System", "Host Name", "RT Kernel", "Processor", "Graphics Card", "Graphics Driver"), Info = c(os, hostname, rt_patch, processor, graphics_card, graphics_driver) )
