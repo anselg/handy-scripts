@@ -30,7 +30,7 @@ echo ""
 # Get the filenames
 HDF_FILENAME="test-10kHz.h5"
 TXT_FILENAME="test-10kHz.txt"
-PLOT_FILENAME="test-10kHz.svg"
+PLOT_FILENAME="test-10kHz.png"
 
 # Prompt user to pick a trials from the HDF file
 ALL_TRIALS=$(h5ls $HDF_FILENAME | cut -d" " -f1 | sed "s/Trial//g")
@@ -73,11 +73,14 @@ GRAPHICS_DRIVER=$(lshw -c display | grep "configuration: driver" | cut -d":" -f2
 RT_PERIOD=$(h5dump -d "/Trial$TRIAL_N/Period (ns)" $HDF_FILENAME |  grep "(0)" | cut -d":" -f2) # in ns
 DOWNSAMPLE=$(h5dump -d "/Trial$TRIAL_N/Downsampling Rate" $HDF_FILENAME |  grep "(0)" | cut -d":" -f2)
 CHANNEL1=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 1 Name" $HDF_FILENAME | \
-           grep "(0)" | cut -d":" -f3 | cut -d"(" -f1)
+           grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | \
+           sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 CHANNEL2=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 2 Name" $HDF_FILENAME | \
-           grep "(0)" | cut -d":" -f3 | cut -d"(" -f1)
+           grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | \
+           sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 CHANNEL3=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 3 Name" $HDF_FILENAME | \
-           grep "(0)" | cut -d":" -f3 | cut -d"(" -f1)
+           grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | \
+           sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 
 # Check the channels
 CHANNEL_CHECK="Real-time Period Comp Time RT Jitter"
