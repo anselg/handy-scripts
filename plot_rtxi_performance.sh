@@ -27,12 +27,37 @@ if ! $(dpkg-query -Wf'${db:Status-abbrev}' "r-base" 2>/dev/null | grep -q '^i');
 fi
 echo ""
 
-# Get the file information information
-HDF_FILENAME="test-50kHz.h5"
-TXT_FILENAME="test-50kHz.txt"
-TRIAL_N=1
+# Get the filenames
+HDF_FILENAME="test-10kHz.h5"
+TXT_FILENAME="test-10kHz.txt"
+PLOT_FILENAME="test-10kHz.svg"
 
+# Prompt user to pick a trials from the HDF file
+ALL_TRIALS=$(h5ls $HDF_FILENAME | cut -d" " -f1 | sed "s/Trial//g")
+if [ "$ALL_TRIALS" == "1" ]; then
+	TRIAL_N=1
+elif [ "$ALL_TRIALS" == "" ]; then
+	echo "----->Check your filename."
+	exit 1
+else
+	echo "----->Which trial do you want to plot? (Enter the number of the trial you want.)" 
+	TRIAL_OPTIONS=""
+	for trial in $ALL_TRIALS; do 
+		TRIAL_OPTIONS=$TRIAL_OPTIONS$trial" "
+	done
+	echo "----->Options: $TRIAL_OPTIONS"
+	read TRIAL_N
+	if [[ "$(echo $ALL_TRIALS | sed "s/ //g")" =~ "$TRIAL_N" ]]&&[[ $ALL_TRIALS =~ "$TRIAL_N" ]]; then
+		echo "Valid option"
+	else
+		echo "Invalid trial selected. (No whitespaces allowed.)"
+		exit 1
+	fi
+fi
+
+# Extract raw data from HDF file
 h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel Data" -y -w 36 -o $TXT_FILENAME $HDF_FILENAME
+sed -i "s/,//g" $TXT_FILENAME
 
 # Get system information to record in the plot
 DISTRO="$(lsb_release -is) $(lsb_release -rs)"
@@ -54,5 +79,13 @@ CHANNEL2=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 2 Name" $FILENAME 
 CHANNEL3=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 3 Name" $FILENAME | \
            grep "(0)" | cut -d":" -f3 | cut -d"(" -f1)
 
+# Check the channels
+CHANNEL_CHECK="Real-time Period Comp Time RT Jitter"
+if [ $CHANNEL1 == "" ]||[ $CHANNEL2 == "" ]||[ $CHANNEL3 == "" ]; then
+	echo "Some channels cannot be read. Make sure you picked the right trial." 
+	exit 1
+fi
+
+Rscript plotPerformance.r $DISTRO $HOSTNAME $RT_KERNEL $PROCESSOR $GRAPHICS_CARD $GRAPHICS_DRIVER $RT_PERIOD $DOWNSAMPLE $CHANNEL1 $CHANNEL2 $CHANNEL3 $TXT_FILENAME $PLOT_FILENAME
 
 exit 0
