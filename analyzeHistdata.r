@@ -33,7 +33,7 @@ graphics_driver = as.character(args[6])
 rate = as.integer(args[7]) # kHz
 
 # Open file and get raw data
-data.raw = read.table("histdata.txt", header=F, col.names=c("Latency", "Count"))
+data.raw = read.table("test_rt_histdata.txt", header=F, col.names=c("Latency", "Count"))
 data.stats = data.raw
 data.stats$Count = data.raw$Count - 1 # ./latency adds 1 to all fields (prevents 0s on log plots)
 
@@ -111,8 +111,8 @@ plot.system = qplot(1:10, 1:10, geom = "blank") +
                                       gpar.coretext = gpar(cex=1)), 
 	                  xmin=1, xmax=10, ymin=1, ymax=10)
 
-# Save plots to histplot.svg. Trying to save in other formats will cause you sadness. 
-svg("histplot.svg", width=12, height=9)
+# Save plots to test_rt_plot.svg. Trying to save in other formats will cause you sadness. 
+svg("test_rt_plot.svg", width=12, height=9)
 grid.newpage()
 pushViewport(viewport(layout = grid.layout(4,6), width=1, height=1))
 print(plot.system, vp = viewport(layout.pos.row = 1, layout.pos.col = 1:6))

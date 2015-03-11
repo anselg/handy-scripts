@@ -64,7 +64,7 @@ RATE=$(expr 1000 / $RT_PERIOD) # Convert RT period to freq in kHz
 
 # Run latency test under dynamic load
 stress --cpu 2 --vm 1 --hdd 1 --timeout $TIME & 
-sudo /usr/xenomai/bin/./latency -s -h -p $RT_PERIOD -B 1 -H 500000 -T $TIME -g histdata.txt | tee test_rt_kernel.log
+sudo /usr/xenomai/bin/./latency -s -h -p $RT_PERIOD -B 1 -H 500000 -T $TIME -g test_rt_histdata.txt | tee test_rt_kernel.log
 
 # Check if R is installed
 hash Rscript 2>/dev/null || { echo >&2 "R is needed for me to plot stats.\nYou can always do that yourself, too."; exit 0; }
