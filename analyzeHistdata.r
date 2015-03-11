@@ -66,7 +66,7 @@ data.hist$Count = data.hist$Count + 1
 #    P(no overrun | data) ^ (Frequency * 1 hr)
 min_rate = 1
 max_rate = 66.7
-data.prob_rt = data.frame("Frequency"=seq(min_rate, max_rate, .01))
+data.prob_rt = data.frame("Frequency"=seq(min_rate, max_rate, .1))
 data.prob_rt = ddply(data.prob_rt, "Frequency", function(x) {
 	prob_rt =  (1 - sum( data.stats$Latency[data.stats$Latency > 1000/x$Frequency] * 
 	                     data.stats$Count[data.stats$Latency > 1000/x$Frequency] ) / 
