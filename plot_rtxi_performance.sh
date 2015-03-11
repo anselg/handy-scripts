@@ -70,22 +70,22 @@ GRAPHICS_CARD=$(lspci | grep VGA | uniq | cut -d":" -f3 | \
 GRAPHICS_DRIVER=$(lshw -c display | grep "configuration: driver" | cut -d":" -f2 | cut -d"=" -f2 | cut -d" " -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 
 # Set up variables for run
-RT_PERIOD=$(h5dump -d "/Trial$TRIAL_N/Period (ns)" $FILENAME |  grep "(0)" | cut -d":" -f2) # in ns
-DOWNSAMPLE=$(h5dump -d "/Trial$TRIAL_N/Downsampling Rate" $FILENAME |  grep "(0)" | cut -d":" -f2)
-CHANNEL1=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 1 Name" $FILENAME | \
+RT_PERIOD=$(h5dump -d "/Trial$TRIAL_N/Period (ns)" $HDF_FILENAME |  grep "(0)" | cut -d":" -f2) # in ns
+DOWNSAMPLE=$(h5dump -d "/Trial$TRIAL_N/Downsampling Rate" $HDF_FILENAME |  grep "(0)" | cut -d":" -f2)
+CHANNEL1=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 1 Name" $HDF_FILENAME | \
            grep "(0)" | cut -d":" -f3 | cut -d"(" -f1)
-CHANNEL2=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 2 Name" $FILENAME | \
+CHANNEL2=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 2 Name" $HDF_FILENAME | \
            grep "(0)" | cut -d":" -f3 | cut -d"(" -f1)
-CHANNEL3=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 3 Name" $FILENAME | \
+CHANNEL3=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 3 Name" $HDF_FILENAME | \
            grep "(0)" | cut -d":" -f3 | cut -d"(" -f1)
 
 # Check the channels
 CHANNEL_CHECK="Real-time Period Comp Time RT Jitter"
-if [ $CHANNEL1 == "" ]||[ $CHANNEL2 == "" ]||[ $CHANNEL3 == "" ]; then
+if [ "$CHANNEL1" == "" ]||[ "$CHANNEL2" == "" ]||[ "$CHANNEL3" == "" ]; then
 	echo "Some channels cannot be read. Make sure you picked the right trial." 
 	exit 1
 fi
 
-Rscript plotPerformance.r $DISTRO $HOSTNAME $RT_KERNEL $PROCESSOR $GRAPHICS_CARD $GRAPHICS_DRIVER $RT_PERIOD $DOWNSAMPLE $CHANNEL1 $CHANNEL2 $CHANNEL3 $TXT_FILENAME $PLOT_FILENAME
+Rscript plotPerformance.r "$DISTRO" "$HOSTNAME" "$RT_KERNEL" "$PROCESSOR" "$GRAPHICS_CARD" "$GRAPHICS_DRIVER" "$RT_PERIOD" "$DOWNSAMPLE" "$CHANNEL1" "$CHANNEL2" "$CHANNEL3" "$TXT_FILENAME" "$PLOT_FILENAME"
 
 exit 0

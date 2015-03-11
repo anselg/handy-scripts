@@ -31,7 +31,16 @@ channel1 = as.character(args[9])
 channel2 = as.character(args[10])
 channel3 = as.character(args[11])
 infile = as.character(args[12])
-outfile = as.characteR(args[13])
+outfile = as.character(args[13])
+
+data.raw = read.table(infile)
+
+# messy, but needed
+if (channel1 == "Real-time") {
+
+}
+
+stop("Hehe, still a work in progress...")
 
 # Read the data and check if it has three variables. 
 # data = read.table(paste(filebit, ".txt", sep=""), sep=',', header=F)
