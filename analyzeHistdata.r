@@ -86,7 +86,7 @@ plot.hist = ggplot(data = data.hist, aes(x=Latency, y=Count)) +
 		breaks = trans_breaks("log10", function(x) 10^x ),
 		labels = trans_format("log10", math_format(10^.x)) ) + 
 	scale_x_continuous(
-		breaks = round(seq(min(data.hist$Latency), max(data.hist$Latency), by = 1), 1) ) +
+		breaks = round(seq(min(data.hist$Latency), max(data.hist$Latency), by = max(data.hist$Latency)/10), 1) ) +
 	xlab(expression(paste("Latency (", mu, "s)"))) 
 
 plot.summary = qplot(1:10, 1:10, geom = "blank") + 

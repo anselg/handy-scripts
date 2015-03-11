@@ -50,10 +50,10 @@ PROCESSOR=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -d":" -f2 | \
             sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 GRAPHICS_CARD=$(lspci | grep VGA | uniq | cut -d":" -f3 | \
                 sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
-GRAPHICS_DRIVER=$(lshw -c display | grep configuration | cut -d":" -f2 | cut -d"=" -f2 | cut -d" " -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
+GRAPHICS_DRIVER=$(lshw -c display | grep "configuration: driver" | cut -d":" -f2 | cut -d"=" -f2 | cut -d" " -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 
 # Set up variables for run
-TIME=10 # duration of run (s)
+TIME=1800 # duration of run (s)
 RT_PERIOD=100
 RATE=$(expr 1000 / $RT_PERIOD) # Convert RT period to freq in kHz
 
@@ -61,7 +61,7 @@ RATE=$(expr 1000 / $RT_PERIOD) # Convert RT period to freq in kHz
 
 # Run latency test under dynamic load
 stress --cpu 2 --vm 1 --hdd 1 --timeout $TIME & 
-sudo /usr/xenomai/bin/./latency -s -h -p $RT_PERIOD -B 1 -H 200000 -T $TIME -g histdata.txt | tee test_rt_kernel.log
+sudo /usr/xenomai/bin/./latency -s -h -p $RT_PERIOD -B 1 -H 500000 -T $TIME -g histdata.txt | tee test_rt_kernel.log
 
 # Check if R is installed
 hash Rscript 2>/dev/null || { echo >&2 "R is needed for me to plot stats.\nYou can always do that yourself, too."; exit 0; }
