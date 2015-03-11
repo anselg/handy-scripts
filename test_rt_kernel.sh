@@ -29,6 +29,9 @@ echo "----->Checking for dependencies needed to run stress test."
 if ! $(dpkg-query -Wf'${db:Status-abbrev}' "stress" 2>/dev/null | grep -q '^i'); 
 	then sudo apt-get -y install stress
 fi
+if ! $(dpkg-query -Wf'${db:Status-abbrev}' "stress" 2>/dev/null | grep -q '^i'); 
+	then sudo apt-get -y install lshw
+fi
 if ! $(dpkg-query -Wf'${db:Status-abbrev}' "r-base" 2>/dev/null | grep -q '^i'); 
 	then sudo apt-get -y install r-base
 fi
