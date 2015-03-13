@@ -37,7 +37,7 @@ infile = as.character(args[12])
 outfile = as.character(args[13])
 
 data.raw = read.table(infile)
-data.stats = data.frame(Time=seq(1, length(data.raw$V1))/(1e6/rt_period*downsample))
+data.stats = data.frame(Time=seq(1, length(data.raw$V1))/(rt_frequency*1000/downsample))
 
 # messy, but needed
 if (channel1 == "Comp Time") {
