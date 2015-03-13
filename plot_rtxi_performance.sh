@@ -25,12 +25,15 @@ echo "----->Checking for dependencies needed to generate plot."
 if ! $(dpkg-query -Wf'${db:Status-abbrev}' "r-base" 2>/dev/null | grep -q '^i'); 
 	then sudo apt-get -y install r-base
 fi
+if ! $(dpkg-query -Wf'${db:Status-abbrev}' "lshw" 2>/dev/null | grep -q '^i'); 
+	then sudo apt-get -y install lshw
+fi
 echo ""
 
 # Get the filenames
 HDF_FILENAME="test-10kHz.h5"
 TXT_FILENAME="test-10kHz.txt"
-PLOT_FILENAME="test-10kHz.png"
+PLOT_FILENAME="test-10kHz.svg"
 
 # Prompt user to pick a trials from the HDF file
 ALL_TRIALS=$(h5ls $HDF_FILENAME | cut -d" " -f1 | sed "s/Trial//g")

@@ -96,10 +96,12 @@ perfplot = ggplot(data.m, aes(x=Time, y=value, colour=variable)) +
 #	ggtitle(paste(os, rt_patch, "\n", processor, graphics_card, graphics_driver, "\n", "Recording at", rate, "kHz", sep=" "))
 
 #ggsave(filename=outfile, plot=perfplot)
-svg(outfile, width=9, height=12 )  # File is HUUUGE
-grid.newpage()
-pushViewport(viewport(layout = grid.layout(4,1), width=1, height=1))
-print(plot.system, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
-print(perfplot, vp = viewport(layout.pos.row = 2:4, layout.pos.col = 1))
-dev.off()
+#svg(outfile, width=9, height=12 )  # File is HUUUGE
+#grid.newpage()
+#pushViewport(viewport(layout = grid.layout(4,1), width=1, height=1))
+#print(plot.system, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+#print(perfplot, vp = viewport(layout.pos.row = 2:4, layout.pos.col = 1))
+#dev.off()
 
+newthing = arrangeGrob(plot.system, perfplot, nrow=2)
+ggsave(file=outfile, newthing)
