@@ -34,8 +34,8 @@ echo ""
 HDF_FILENAME=$1
 
 # Check if an HDF file was provided. If so, filename as template to make other filenames
-if [ -f $HDF_FILENAME ]; then
-	if [ ${HDF_FILENAME##*.} == "h5" ]; then 
+if [ -f "$HDF_FILENAME" ]; then
+	if [ "${HDF_FILENAME##*.}" == "h5" ]; then 
 		TXT_FILENAME=${HDF_FILENAME%.*}".txt"
 		PLOT_FILENAME=${HDF_FILENAME%.*}".png"
 	else
