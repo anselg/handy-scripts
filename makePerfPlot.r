@@ -50,7 +50,7 @@ if (max(data.stats$Time) > 600) {
 	xaxislabel = "Time (s)"
 }
 
-# messy, but needed
+# messy, but needed to check which channel has which variable
 if (channel1 == "Comp Time") {
 	data.stats$CompTime = data.raw$V2
 } else if (channel2 == "Comp Time") {
@@ -76,10 +76,8 @@ if (channel1 == "RT Jitter") {
 }
 
 head(data.stats)
-#stop("Hehe, still a work in progress...")
 
 # Scale the data.
-#data.stats$Time = seq(1, length(data[,1])) #/(rate*1000) # to s
 data.stats$CompTime  = data.stats$CompTime / 1000 # to us
 data.stats$Period = data.stats$Period / 1000 # to us
 data.stats$Jitter = data.stats$Jitter / 1000 # to us
@@ -106,9 +104,8 @@ plot.performance = ggplot(data.m, aes(x=Time, y=value, colour=variable)) +
 	labs(x=xaxislabel, y=expression(paste("Time (", mu, "s)"))) + 
 	theme(axis.text=element_text(size=16), axis.title=element_text(size=16)) +
 	guides(colour=FALSE) #+
-#	ggtitle(paste("Operating System:", os, rt_kernel, "\n", 
-#	              "Processor: ", processor, "\n", 
-#					  "Graphics Card: ", graphics_card, graphics_driver, "\n", "Recording at", rt_frequency, "kHz", sep=" "))
+
+# Still not happy with how the plotting has turned out. Using png for now. -Ansel
 
 #ggsave(filename=outfile, plot=perfplot)
 png(outfile, width=700, height=900) #, width=800, height=1100)
@@ -120,4 +117,4 @@ print(plot.performance, vp = viewport(layout.pos.row = 2:4, layout.pos.col = 1))
 dev.off()
 
 #newthing = arrangeGrob(plot.system, perfplot, nrow=2, heights=c(.25, .75) )
-#ggsave(file=outfile)#, newthing)
+#ggsave(file=outfile, newthing)
