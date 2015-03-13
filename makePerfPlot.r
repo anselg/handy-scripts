@@ -37,7 +37,18 @@ infile = as.character(args[12])
 outfile = as.character(args[13])
 
 data.raw = read.table(infile)
-data.stats = data.frame(Time=seq(1, length(data.raw$V1))/(rt_frequency*1000/downsample))
+data.stats = data.frame(Time=seq(1, length(data.raw$V1))/(rt_frequency*1000/downsample)) # in s
+
+# Choose whether to show time in min or hr
+if (max(data.stats$Time) > 600) {
+	xaxislabel = "Time (min)"
+	data.stats$Time = data.stats$Time / 60 # s to min
+} else if(max(data.stats$Time) > 10800) {
+	xaxislabel = "Time (hr)"
+	data.stats$Time = data.stats$Time / 3600 # s to hr
+} else {
+	xaxislabel = "Time (s)"
+}
 
 # messy, but needed
 if (channel1 == "Comp Time") {
@@ -92,7 +103,7 @@ plot.system = qplot(1:2, 1:2, geom = "blank") +
 plot.performance = ggplot(data.m, aes(x=Time, y=value, colour=variable)) +
 	geom_point(shape=16, alpha=.2, cex=1) + 
 	facet_wrap( ~ variable, scales="free", ncol=1) + 
-	labs(x="Time (s)", y=expression(paste("Time (", mu, "s)"))) + 
+	labs(x=xaxislabel, y=expression(paste("Time (", mu, "s)"))) + 
 	theme(axis.text=element_text(size=16), axis.title=element_text(size=16)) +
 	guides(colour=FALSE) #+
 #	ggtitle(paste("Operating System:", os, rt_kernel, "\n", 
