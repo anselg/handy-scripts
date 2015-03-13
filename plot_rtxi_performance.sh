@@ -31,9 +31,20 @@ fi
 echo ""
 
 # Get the filenames
-HDF_FILENAME="test-10kHz.h5"
-TXT_FILENAME="test-10kHz.txt"
-PLOT_FILENAME="test-10kHz.svg"
+HDF_FILENAME=$1
+
+if [ -f $HDF_FILENAME ]; then
+	if [ ${HDF_FILENAME##*.} == "h5" ]; then 
+		TXT_FILENAME=${HDF_FILENAME%.*}".txt"
+		PLOT_FILENAME=${HDF_FILENAME%.*}".svg"
+	else
+		echo "----->You need to provide an *.h5 file"
+		exit 1
+	fi
+else 
+	echo "----->Provided file not found."
+	exit 1
+fi
 
 # Prompt user to pick a trials from the HDF file
 ALL_TRIALS=$(h5ls $HDF_FILENAME | cut -d" " -f1 | sed "s/Trial//g")
@@ -66,24 +77,16 @@ sed -i "s/,//g" $TXT_FILENAME
 DISTRO="$(lsb_release -is) $(lsb_release -rs)"
 HOSTNAME=`uname -n`
 RT_KERNEL=`uname -r`
-PROCESSOR=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -d":" -f2 | \
-            sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
-GRAPHICS_CARD=$(lspci | grep VGA | uniq | cut -d":" -f3 | \
-                sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
+PROCESSOR=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -d":" -f2 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
+GRAPHICS_CARD=$(lspci | grep VGA | uniq | cut -d":" -f3 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 GRAPHICS_DRIVER=$(lshw -c display | grep "configuration: driver" | cut -d":" -f2 | cut -d"=" -f2 | cut -d" " -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 
 # Set up variables for run
 RT_PERIOD=$(h5dump -d "/Trial$TRIAL_N/Period (ns)" $HDF_FILENAME |  grep "(0)" | cut -d":" -f2) # in ns
 DOWNSAMPLE=$(h5dump -d "/Trial$TRIAL_N/Downsampling Rate" $HDF_FILENAME |  grep "(0)" | cut -d":" -f2)
-CHANNEL1=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 1 Name" $HDF_FILENAME | \
-           grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | \
-           sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
-CHANNEL2=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 2 Name" $HDF_FILENAME | \
-           grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | \
-           sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
-CHANNEL3=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 3 Name" $HDF_FILENAME | \
-           grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | \
-           sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
+CHANNEL1=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 1 Name" $HDF_FILENAME | grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
+CHANNEL2=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 2 Name" $HDF_FILENAME | grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
+CHANNEL3=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 3 Name" $HDF_FILENAME | grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 
 # Check the channels
 CHANNEL_CHECK="Real-time Period Comp Time RT Jitter"
