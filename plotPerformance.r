@@ -28,6 +28,7 @@ processor = as.character(args[4])
 graphics_card = as.character(args[5])
 graphics_driver = as.character(args[6])
 rt_period = as.integer(args[7]) # in ns
+rt_frequency = 1e6 / rt_period # in kHz
 downsample = as.integer(args[8])
 channel1 = as.character(args[9])
 channel2 = as.character(args[10])
@@ -73,11 +74,11 @@ data.stats$Period = data.stats$Period / 1000 # to us
 data.stats$Jitter = data.stats$Jitter / 1000 # to us
 
 # System info passed from command line
-data.system = data.frame(Field = c("Operating System", "Host Name", "RT Kernel", "Processor", "Graphics Card", "Graphics Driver"), Info = c(os, hostname, rt_kernel, processor, graphics_card, graphics_driver) )
+data.system = data.frame(Field = c("Operating System", "Hostname", "RT Kernel", "Processor", "Graphics Card", "Graphics Driver", "RT Frequency (kHz)", "Downsampling"), Info = c(os, hostname, rt_kernel, processor, graphics_card, graphics_driver, rt_frequency, downsample) )
 
 data.m = melt(data.stats, id.vars='Time')
 
-plot.system = qplot(1:10, 1:10, geom = "blank") +
+plot.system = qplot(1:2, 1:2, geom = "blank") +
    theme_bw() +
    theme(line = element_blank(), text = element_blank(), panel.grid.major = element_blank(),
          panel.grid.minor = element_blank(), panel.border = element_blank(),
@@ -86,22 +87,26 @@ plot.system = qplot(1:10, 1:10, geom = "blank") +
                                       row.just = "left", col.just = "left",
                                       padding.h = unit(5,"mm"),
                                       gpar.coretext = gpar(cex=1)),
-                     xmin=1, xmax=10, ymin=1, ymax=10)
+                     xmin=1, xmax=2, ymin=1, ymax=2)
 
-perfplot = ggplot(data.m, aes(x=Time, y=value, colour=variable)) + 
-	geom_point(shape=16,alpha=.1) + 
+plot.performance = ggplot(data.m, aes(x=Time, y=value, colour=variable)) +
+	geom_point(shape=16, alpha=.2, cex=1) + 
 	facet_wrap( ~ variable, scales="free", ncol=1) + 
 	labs(x="Time (s)", y=expression(paste("Time (", mu, "s)"))) + 
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=16)) +
 	guides(colour=FALSE) #+
-#	ggtitle(paste(os, rt_patch, "\n", processor, graphics_card, graphics_driver, "\n", "Recording at", rate, "kHz", sep=" "))
+#	ggtitle(paste("Operating System:", os, rt_kernel, "\n", 
+#	              "Processor: ", processor, "\n", 
+#					  "Graphics Card: ", graphics_card, graphics_driver, "\n", "Recording at", rt_frequency, "kHz", sep=" "))
 
 #ggsave(filename=outfile, plot=perfplot)
-#svg(outfile, width=9, height=12 )  # File is HUUUGE
-#grid.newpage()
-#pushViewport(viewport(layout = grid.layout(4,1), width=1, height=1))
-#print(plot.system, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
-#print(perfplot, vp = viewport(layout.pos.row = 2:4, layout.pos.col = 1))
-#dev.off()
+png(outfile, width=700, height=900) #, width=800, height=1100)
+#svg(outfile, width=5, height=8)
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(4,1), width=1, height=1))
+print(plot.system, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(plot.performance, vp = viewport(layout.pos.row = 2:4, layout.pos.col = 1))
+dev.off()
 
-newthing = arrangeGrob(plot.system, perfplot, nrow=2)
-ggsave(file=outfile, newthing)
+#newthing = arrangeGrob(plot.system, perfplot, nrow=2, heights=c(.25, .75) )
+#ggsave(file=outfile)#, newthing)

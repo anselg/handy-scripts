@@ -33,10 +33,11 @@ echo ""
 # Get the filenames
 HDF_FILENAME=$1
 
+# Check if an HDF file was provided. If so, filename as template to make other filenames
 if [ -f $HDF_FILENAME ]; then
 	if [ ${HDF_FILENAME##*.} == "h5" ]; then 
 		TXT_FILENAME=${HDF_FILENAME%.*}".txt"
-		PLOT_FILENAME=${HDF_FILENAME%.*}".svg"
+		PLOT_FILENAME=${HDF_FILENAME%.*}".png"
 	else
 		echo "----->You need to provide an *.h5 file"
 		exit 1
@@ -71,7 +72,7 @@ fi
 
 # Extract raw data from HDF file
 h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel Data" -y -w 36 -o $TXT_FILENAME $HDF_FILENAME
-sed -i "s/,//g" $TXT_FILENAME
+sed -i "s/,//g" $TXT_FILENAME # take care of comma delimiting
 
 # Get system information to record in the plot
 DISTRO="$(lsb_release -is) $(lsb_release -rs)"
@@ -88,8 +89,8 @@ CHANNEL1=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 1 Name" $HDF_FILEN
 CHANNEL2=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 2 Name" $HDF_FILENAME | grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 CHANNEL3=$(h5dump -d "/Trial$TRIAL_N/Synchronous Data/Channel 3 Name" $HDF_FILENAME | grep "(0)" | cut -d":" -f3 | cut -d"(" -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 
-# Check the channels
-CHANNEL_CHECK="Real-time Period Comp Time RT Jitter"
+# Check that the channels exist. 
+CHANNEL_CHECK="Real-time Period Comp Time RT Jitter" # not used yet...
 if [ "$CHANNEL1" == "" ]||[ "$CHANNEL2" == "" ]||[ "$CHANNEL3" == "" ]; then
 	echo "Some channels cannot be read. Make sure you picked the right trial." 
 	exit 1
