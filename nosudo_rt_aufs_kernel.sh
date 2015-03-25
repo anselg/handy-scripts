@@ -28,7 +28,7 @@
 # Export environment variables
 echo  "----->Setting up variables"
 
-export all_root=/opt/kernel_build
+export all_root=/opt/rt_aufs_build
 
 export linux_version=3.8.13
 export linux_tree=$all_root/linux-$linux_version
@@ -39,9 +39,9 @@ export xenomai_root=$all_root/xenomai-$xenomai_version
 export aufs_version=3.8
 export aufs_root=$all_root/aufs-$aufs_version
 
-export scripts_dir=`pwd`
-
 export build_root=$all_root/build
+
+export scripts_dir=`pwd`
 
 sudo rm -rf $all_root
 sudo mkdir $all_root
@@ -54,6 +54,8 @@ else
 	echo  "----->Environment configuration failed"
 	exit
 fi
+
+exit
 
 # Download essentials
 echo  "----->Downloading Linux kernel"
