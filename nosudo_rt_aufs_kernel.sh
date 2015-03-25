@@ -20,11 +20,6 @@
 
 #!/bin/bash
 
-#if ! id | grep -q root; then
-#  echo "Must run script as root; try again with sudo ./install_rt_kernel.sh"
-#	exit
-#fi
-
 # Export environment variables
 echo  "----->Setting up variables"
 
@@ -45,7 +40,8 @@ export scripts_dir=`pwd`
 
 sudo rm -rf $all_root
 sudo mkdir $all_root
-sudo chown -R user $all_root/
+sudo chown -R `whoami` $all_root
+sudo chgrp users $all_root
 mkdir $build_root
 
 if [ $? -eq 0 ]; then
@@ -54,8 +50,6 @@ else
 	echo  "----->Environment configuration failed"
 	exit
 fi
-
-exit
 
 # Download essentials
 echo  "----->Downloading Linux kernel"
