@@ -70,7 +70,7 @@ fi
 
 # Patch kernel
 echo  "----->Patching aufs onto kernel"
-cd $opt
+cd $all_root
 git clone git://git.code.sf.net/p/aufs/aufs3-standalone aufs-$aufs_version
 cd $aufs_root
 git checkout origin/aufs$aufs_version
@@ -113,7 +113,7 @@ fi
 
 # Install compiled kernel
 echo  "----->Installing compiled kernel"
-cd $opt
+cd $all_root
 sudo dpkg -i linux-image-*.deb
 sudo dpkg -i linux-headers-*.deb
 
