@@ -138,6 +138,7 @@ int main(int argc,char *argv[]) {
 	palette.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(255, 255, 255));
 
 	/* Create GUI Objects */
+   QApplication::setDesktopSettingsAware(false);
 	QApplication *app = new QApplication(argc,argv);
 	app->setStyle("cleanlooks");
 	app->setPalette(palette);
