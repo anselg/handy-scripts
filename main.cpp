@@ -139,6 +139,7 @@ int main(int argc,char *argv[]) {
 
 	/* Create GUI Objects */
    QApplication::setDesktopSettingsAware(false);
+//	QApplication::setGraphicsSystem("raster");
 	QApplication *app = new QApplication(argc,argv);
 	app->setStyle("cleanlooks");
 	app->setPalette(palette);
