@@ -3,7 +3,7 @@ Description=Set xenomai_gid at boot
 
 [Service]
 Type=oneshot
-ExecStart=/etc/init.d/set_xenomai_gid
+ExecStart=/bin/bash /usr/sbin/set_xenomai_gid
 
 [Install]
 WantedBy=multi-user.target
