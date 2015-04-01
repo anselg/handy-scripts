@@ -19,16 +19,13 @@
 #!/bin/bash
 
 if [ -c /dev/rtheap ]; then
-#	XENOMAI_GID=$(getent group xenomai | cut -d":" -f3)
-#	XENOMAI_GID=$(getent group adm | cut -d":" -f3)
-#	echo $XENOMAI_GID > /sys/module/xeno_nucleus/parameters/xenomai_gid
-	echo 1000 > /sys/module/xeno_nucleus/parameters/xenomai_gid
-#	echo "xenomai_gid set to $XENOMAI_GID"
+	XENOMAI_GID=$(getent group xenomai | cut -d":" -f3)
+	echo $XENOMAI_GID > /sys/module/xeno_nucleus/parameters/xenomai_gid
 fi
 
 # error check
 if [ $? -eq 0 ]; then
-	echo "Exiting without error."
+	echo "xenomai_gid set to $XENOMAI_GID"
 else
 	echo "ERROR: Xenomai GID setting failed."
 fi
