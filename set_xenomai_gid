@@ -20,9 +20,10 @@
 
 if [ -c /dev/rtheap ]; then
 #	XENOMAI_GID=$(getent group xenomai | cut -d":" -f3)
-	XENOMAI_GID=$(getent group adm | cut -d":" -f3)
-	echo $XENOMAI_GID > /sys/module/xeno_nucleus/parameters/xenomai_gid
-	echo "xenomai_gid set to $XENOMAI_GID"
+#	XENOMAI_GID=$(getent group adm | cut -d":" -f3)
+#	echo $XENOMAI_GID > /sys/module/xeno_nucleus/parameters/xenomai_gid
+	echo 1000 > /sys/module/xeno_nucleus/parameters/xenomai_gid
+#	echo "xenomai_gid set to $XENOMAI_GID"
 fi
 
 # error check
