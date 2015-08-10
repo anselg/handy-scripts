@@ -18,24 +18,14 @@
 
 #!/bin/bash
 
-# Check to see if R and stress are installed
-echo "----->Checking for dependencies needed to run stress test."
-if ! $(dpkg-query -Wf'${db:Status-abbrev}' "stress" 2>/dev/null | grep -q '^i'); 
-	then sudo apt-get -y install stress
-fi
-if ! $(dpkg-query -Wf'${db:Status-abbrev}' "lshw" 2>/dev/null | grep -q '^i'); 
-	then sudo apt-get -y install lshw
-fi
-if ! $(dpkg-query -Wf'${db:Status-abbrev}' "r-base" 2>/dev/null | grep -q '^i'); 
-	then sudo apt-get -y install r-base
-fi
-echo ""
-
 echo "----->Running latency test under load. Please wait 30 minutes."
 echo "----->Do not interrupt."
 echo "----->If you do interrupt, stop stressing the system by running:"
 echo "      $ pkill stress"
 echo ""
+
+echo "----->Please enter the frequency (in Hz) that you would like to test, then press enter."
+read SysFreq
 
 # Get system information
 DISTRO="$(lsb_release -is) $(lsb_release -rs)"
@@ -43,17 +33,31 @@ HOSTNAME=`uname -n`
 RT_KERNEL=`uname -r`
 PROCESSOR=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -d":" -f2 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 GRAPHICS_CARD=$(lspci | grep VGA | uniq | cut -d":" -f3 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
-GRAPHICS_DRIVER=$(lshw -c display | grep "configuration: driver" | cut -d":" -f2 | cut -d"=" -f2 | cut -d" " -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
+GRAPHICS_DRIVER=$(sudo lshw -c display | grep "configuration: driver" | cut -d":" -f2 | cut -d"=" -f2 | cut -d" " -f1 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
+
+# For nouveau, sometimes, lshw doesn't show that it's loaded but lsmod does. 
+if [ "$GRAPHICS_DRIVER" == "" ]; then
+	GRAPHICS_DRIVER=$(lsmod | grep video | sed 's/  */ /g' | cut -d" " -f4)
+fi
+DAQ=$(lspci | grep National | cut -d":" -f3 | sed 's/ \+/ /g' | sed -e 's/^\  *//' -e 's/\ *$//')
 
 # Set up variables for run
 TIME=1800 # duration of run (s)
-RT_PERIOD=100
+RT_PERIOD=$(awk "BEGIN {print 1 / $SysFreq * 1e6}") # period in us
 RATE=$(expr 1000 / $RT_PERIOD) # Convert RT period to freq in kHz
 
 # Run latency test under dynamic load
-stress --cpu 2 --vm 1 --hdd 1 --timeout $TIME & 
-sudo /usr/xenomai/bin/./latency -s -h -p $RT_PERIOD -B 1 -H 500000 -T $TIME -g test_rt_histdata.txt | tee test_rt_kernel.log
+if [ -f test_rt_histdata.txt ]; then
+	echo 'The test has been run already. Rename test_rt_histdata.txt or delete it. Then, run this script again.'
+else
+	# Calibrate Xenomai to not show negative latencies
+	sudo bash -c "echo 0 > /proc/xenomai/latency"
+	# Run stress
+	stress --cpu 2 --vm 1 --hdd 1 --timeout $TIME & 
+	# Start testing
+	sudo /usr/xenomai/bin/./latency -s -h -p $RT_PERIOD -B 1 -H 500000 -T $TIME -g test_rt_histdata.txt | tee test_rt_kernel.log
+fi
 
-Rscript makeHistPlot.r "$DISTRO" "$HOSTNAME" "$RT_KERNEL" "$PROCESSOR" "$GRAPHICS_CARD" "$GRAPHICS_DRIVER" "$RATE"
+Rscript makeHistPlot.r "$DISTRO" "$HOSTNAME" "$RT_KERNEL" "$PROCESSOR" "$GRAPHICS_CARD" "$GRAPHICS_DRIVER" "$RATE" "$DAQ"
 
 exit 0
