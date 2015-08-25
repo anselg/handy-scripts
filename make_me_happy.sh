@@ -56,5 +56,6 @@ fi
 ###############################################################################
 
 sudo apt-get install shimmer-themes gnome-tweak-tool
-sudo find /usr/share/themes/Numix -type f -exec sed -e "s/d64937/4682b4/g" {} +
+#sudo find /usr/share/themes/Numix -type f -exec sed -e "s/d64937/4682b4/g" {} +
+sudo find ./usr/share/themes/Numix -type f \( -iname '*.svg' -o -iname '*.css' -o -iname '*.scss' \) -exec sed -i "s/#d64937/#4682b4/g" {} \;
 # ^- this might break...
