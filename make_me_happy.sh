@@ -29,6 +29,7 @@ if [ -f ".bashrc" ]; then
 	cp .bashrc .bashrc-$(date +%Y%m%d)
 fi
 echo "alias sl='ls -r'" >> .bashrc
+echo "alias happymake='make -j`nproc` && sudo make install'" >> .bashrc
 
 
 ###############################################################################
