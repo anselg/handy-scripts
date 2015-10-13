@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # The Real-Time eXperiment Interface (RTXI)
 # Copyright (C) 2011 Georgia Institute of Technology, University of Utah, Weill Cornell Medical College
 #
@@ -15,8 +17,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # Created by Yogi Patel <yapatel@gatech.edu> 2014.1.31
-
-#!/bin/bash
 
 echo "----->Running latency test under load. Please wait 30 minutes."
 echo "----->Do not interrupt."
