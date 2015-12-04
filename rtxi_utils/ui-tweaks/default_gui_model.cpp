@@ -86,17 +86,10 @@ DefaultGUIModel::~DefaultGUIModel(void) {
 
 void DefaultGUIModel::createGUI(DefaultGUIModel::variable_t *var, int size) {
 
-	QWidget::setAttribute(Qt::WA_DeleteOnClose);
-
 	// Make Mdi
 	subWindow = new QMdiSubWindow;
 	subWindow->setWindowIcon(QIcon("/usr/local/lib/rtxi/RTXI-widget-icon.png"));
-	subWindow->setWindowFlags(Qt::CustomizeWindowHint);
-	subWindow->setWindowFlags(Qt::WindowCloseButtonHint);
-	subWindow->setWindowFlags(Qt::WindowMinimizeButtonHint);
-	subWindow->setWindowFlags(Qt::SubWindow);
-//	subWindow->setOption(QMdiSubWindow::RubberBandResize, true);
-//	subWindow->setOption(QMdiSubWindow::RubberBandMove, true);
+	subWindow->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
 	MainWindow::getInstance()->createMdi(subWindow);
 
 	// Create main layout
@@ -107,7 +100,7 @@ void DefaultGUIModel::createGUI(DefaultGUIModel::variable_t *var, int size) {
 	QGridLayout *gridLayout = new QGridLayout;
 
 	size_t nstate = 0, nparam = 0, nevent = 0, ncomment = 0;
-	for (size_t i = 0; i < size; i++) {
+	for (uint16_t i = 0; i < size; i++) {
 		if (var[i].flags & (PARAMETER | STATE | EVENT | COMMENT)) {
 			param_t param;
 
@@ -183,6 +176,7 @@ void DefaultGUIModel::createGUI(DefaultGUIModel::variable_t *var, int size) {
 
 	// Set layout to Mdi and show
 	setLayout(layout);
+	subWindow->setAttribute(Qt::WA_DeleteOnClose);
 	subWindow->setWidget(this);
 	subWindow->show();
 }
