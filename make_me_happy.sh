@@ -18,7 +18,7 @@ set smartindent
 set hlsearch
 set incsearch
 set showmatch
-syntax on" > .vimrc
+syntax on" > ~/.vimrc
 
 
 ###############################################################################
