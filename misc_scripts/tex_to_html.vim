@@ -4,6 +4,7 @@
 :%s:\\textbf{\([^}]*\)}:<b>\1</b>:g
 :%s:\\emph{\([^}]*\)}:<i>\1</i>:g
 :%s:\\texttt{\([^}]*\)}:<code>\1</code>:g
+:%s:\\subsection{\([^}]*\)}:<h5\ class="page-header">\1</h5>:g
 :%s/\\ref{[^}]*}//g
 :%s/\$\\rightarrow\$/\ -->\ /g
 :%s/\$\\leftarrow\$/\ <--\ /g
