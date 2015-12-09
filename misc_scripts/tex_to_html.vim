@@ -13,4 +13,6 @@
 :%s/\\seealso{[^}]*}//g
 :%s/\\begin{[^}]*}/{% highlight bash %}/g
 :%s/\\end{[^}]*}/{% endhighlight %}/g
-:%s/\\//g
+:%s/\\\\//g
+
+":%s/\\//g <-- maybe...
