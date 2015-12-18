@@ -5,5 +5,5 @@ if [ $# != 5 ]; then
 	exit
 fi
 
-ffmpeg -ss $3 -i $1 -t $4 -s $5 -f gif $2
+ffmpeg -ss $3 -i $1 -t $4 -s $5 -f gif $2 && \
 gifsicle -O3 < $2 > $2
