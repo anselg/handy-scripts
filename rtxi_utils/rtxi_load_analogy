@@ -1,7 +1,7 @@
 #! /bin/bash
 
 ### BEGIN INIT INFO
-# Provides:          set_xenomai_gid
+# Provides:          rtxi_load_analogy
 # Required-Start:    $all 
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
@@ -26,16 +26,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-if [ -c /dev/rtheap ]; then
-	XENOMAI_GID=$(getent group xenomai | cut -d":" -f3)
-	echo $XENOMAI_GID > /sys/module/xeno_nucleus/parameters/xenomai_gid
-fi
+# get pci bus address of card
+bus_addr=$(lspci | grep National | awk '{print$1}' | colrm 2)
+
+# parse address
+val=$(lspci | grep National | awk '{print$1}' | tr ':' ',' | sed 's/.\{2\}$//' | tr --delete '0')
+
+# setup load value for command
+load_val=${bus_addr}x${val}
+
+# call configuration to load the card
+$(analogy_config analogy0 analogy_ni_pcimio ${load_val})
+#$(analogy_config analogy0 analogy_ni_pcimio)
 
 # error check
 if [ $? -eq 0 ]; then
-	echo "xenomai_gid set to $XENOMAI_GID"
+	echo "Analogy device loaded."
 else
-	echo "ERROR: Xenomai GID setting failed."
+	echo "ERROR: Analogy device loading failed."
 fi
 
 exit 0
