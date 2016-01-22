@@ -1,0 +1,43 @@
+#! /bin/bash
+
+### BEGIN INIT INFO
+# Provides:          set_xenomai_gid
+# Required-Start:    $all 
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Load analogy at boot
+# Description: Find the bus ID for the NI DAQ and use the address to load the analogy driver on startup
+### END INIT INFO
+
+# The Real-Time eXperiment Interface (RTXI)
+# Copyright (C) 2011 Georgia Institute of Technology, University of Utah, Weill Cornell Medical College
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+if [ -c /dev/rtheap ]; then
+	XENOMAI_GID=$(getent group xenomai | cut -d":" -f3)
+	echo $XENOMAI_GID > /sys/module/xenomai/parameters/allowed_group
+
+	# error check
+	if [ $? -eq 0 ]; then
+		echo "xenomai_gid set to $XENOMAI_GID"
+		exit 0
+	else
+		echo "ERROR: Xenomai GID setting failed."
+		exit 1
+	fi
+else 
+	echo "device /dev/rtheap missing"
+fi
