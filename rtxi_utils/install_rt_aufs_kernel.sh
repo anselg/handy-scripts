@@ -88,8 +88,8 @@ cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/linux/
 
 echo  "----->Patching xenomai onto kernel"
 cd $linux_tree
-$xenomai_root/scripts/prepare-kernel.sh --arch=x86_64 --adeos=$xenomai_root/kernel/cobalt/arch/x86/patches/ipipe-core-3.18.20-x86-3.patch --linux=$linux_tree
-yes "" | make localmodconfig
+$xenomai_root/scripts/prepare-kernel.sh --arch=x86_64 --adeos=$xenomai_root/kernel/cobalt/arch/x86/patches/ipipe-core-$linux_version-x86-?.patch --linux=$linux_tree
+yes "" | make oldconfig
 make menuconfig
 
 if [ $? -eq 0 ]; then
