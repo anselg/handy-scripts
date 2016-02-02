@@ -18,6 +18,7 @@ set smartindent
 set hlsearch
 set incsearch
 set showmatch
+set wildmenu
 syntax on" > ~/.vimrc
 
 
