@@ -15,6 +15,11 @@ export linux_tree="linux-${linux_version}"
 wget --no-check-certificate https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/patch-4.4.1-rt6.patch.gz
 gunzip patch-4.4.1-rt6.patch
 
+# Get kernel *.deb file from ubuntu repos
+wget kernel.ubuntu.com/~kernel-ppa/mainline/v4.4.1-wily/linux-image-4.4.1-040401-generic_4.4.1-040401.201601311534_amd64.deb
+dpkg-deb -x linux-image-4.4.1-040401-generic_4.4.1-040401.201601311534_amd64.deb linux-image-$linux_version
+cp linux-image-$linux_version/boot/config-* linux-4.4.1/.config
+
 # Patch rt kernel
 cd $linux_tree
 patch -p1 < ../patch-4.4.1-rt6.patch
