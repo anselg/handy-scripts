@@ -44,4 +44,4 @@ cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/linux/
 cd $linux_tree
 make menuconfig
 export CONCURRENCY_LEVEL=$(grep -c ^processor /proc/cpuinfo)
-fakeroot make-kpkg --initrd --append-to-version=-rt-aufs --revision $(date +%Y%m%d) kernel-image kernel-headers modules
+fakeroot make-kpkg --initrd --append-to-version=-aufs --revision $(date +%Y%m%d) kernel-image kernel-headers modules
