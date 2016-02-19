@@ -39,3 +39,9 @@ cp -r $aufs_root/Documentation $linux_tree
 cp -r $aufs_root/fs $linux_tree
 cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/uapi/linux/
 cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/linux/
+
+# build the kernel
+cd $linux_tree
+make menuconfig
+export CONCURRENCY_LEVEL=$(grep -c ^processor /proc/cpuinfo)
+fakeroot make-kpkg --initrd --append-to-version=-rt-aufs --revision $(date +%Y%m%d) kernel-image kernel-headers modules
