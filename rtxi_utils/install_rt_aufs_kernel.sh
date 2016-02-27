@@ -88,8 +88,8 @@ cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/linux/
 
 echo  "----->Patching xenomai onto kernel"
 cd $linux_tree
-$xenomai_root/scripts/prepare-kernel.sh --arch=x86_64 --adeos=$xenomai_root/kernel/cobalt/arch/x86/patches/ipipe-core-3.18.20-x86-3.patch --linux=$linux_tree
-yes "" | make localmodconfig
+$xenomai_root/scripts/prepare-kernel.sh --arch=x86_64 --adeos=$xenomai_root/kernel/cobalt/arch/x86/patches/ipipe-core-$linux_version-x86-?.patch --linux=$linux_tree
+yes "" | make oldconfig
 make menuconfig
 
 if [ $? -eq 0 ]; then
@@ -140,6 +140,9 @@ fi
 
 # Install user libraries
 echo  "----->Installing user libraries"
+if [ -d "/usr/xenomai" ]; then
+	mv /usr/xenomai /usr/xenomai-$(date +%F_%T)
+fi
 cd $build_root
 $xenomai_root/configure --with-core=cobalt --enable-pshared --enable-smp --enable-x86-vsyscall --enable-dlopen-libs
 make -s

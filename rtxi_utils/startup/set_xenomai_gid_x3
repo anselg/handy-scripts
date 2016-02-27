@@ -28,14 +28,16 @@
 
 if [ -c /dev/rtheap ]; then
 	XENOMAI_GID=$(getent group xenomai | cut -d":" -f3)
-	echo $XENOMAI_GID > /sys/module/xeno_nucleus/parameters/xenomai_gid
-fi
+	echo $XENOMAI_GID > /sys/module/xenomai/parameters/allowed_group
 
-# error check
-if [ $? -eq 0 ]; then
-	echo "xenomai_gid set to $XENOMAI_GID"
-else
-	echo "ERROR: Xenomai GID setting failed."
+	# error check
+	if [ $? -eq 0 ]; then
+		echo "xenomai_gid set to $XENOMAI_GID"
+		exit 0
+	else
+		echo "ERROR: Xenomai GID setting failed."
+		exit 1
+	fi
+else 
+	echo "device /dev/rtheap missing"
 fi
-
-exit 0
