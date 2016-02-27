@@ -11,8 +11,11 @@ using HDF5
 using Cairo
 using Fontconfig
 
-filename = "2016.02.19.Cell3.1.h5";
-plotname = "2016.02.19.Cell3.1.pdf";
+filename = ARGS[1]
+plotname = replace(filename, ".h5", ".pdf")
+#filename = "2016.02.19.Cell3.1.h5";
+#plotname = "2016.02.19.Cell3.1.pdf";
+
 trial_num = 1;
 num_points = 10000; # maximum number of points to plot
 
