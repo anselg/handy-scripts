@@ -17,7 +17,7 @@ plotname = replace(filename, ".h5", ".pdf")
 #plotname = "2016.02.19.Cell3.1.pdf";
 
 trial_num = 1;
-num_points = 10000; # maximum number of points to plot
+num_points = 100000; # maximum number of points to plot
 
 ################################################################################
 # Open the HDF file and read the data into a DataFrame. 
