@@ -60,6 +60,9 @@ if isempty(time_idx)
 	trial_frame[:Time] = collect(1:length(trial_frame[1])) * 
 	                     period / downsampling_rate / 1000000000; # ns->s
 	time_symbol=symbol("Time (s)");
+else 
+	# Current protocols pace 500 beats at 500ms BCL before starting. 
+	trial_frame = trial_frame[trial_frame[time_symbol] .>= 250000, :]
 end
 
 # Downsample the data before it's plotted to reduce the file size and speed up 
