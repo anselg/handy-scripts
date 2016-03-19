@@ -3,7 +3,29 @@
 ################################################################################
 # This script plots all timeseries data from an HDF file. 
 #
-# Global variables defined below.
+# Parse command line arguments. 
+################################################################################
+using ArgParse
+
+s = ArgParseSettings()
+@add_arg_table s begin
+	"--hdf-file", "-i"
+		help = "HDF file from RTXI"
+		required = true
+	"--trial-num", "-t"
+		help = "Trial number"
+		arg_type = Int
+		default = 0
+	"--num-points", "-n"
+		help = "Max. number of points per plot"
+		arg_type = Int
+		default = 100000
+end
+
+parsed_args = parse_args(ARGS,s)
+
+################################################################################
+# Load remaining modules and define global variables.
 ################################################################################
 using Gadfly
 using DataFrames
@@ -11,13 +33,11 @@ using HDF5
 using Cairo
 using Fontconfig
 
-filename = ARGS[1]
+filename = parsed_args["hdf-file"]
 plotname = replace(filename, ".h5", ".pdf")
-#filename = "2016.02.19.Cell3.1.h5";
-#plotname = "2016.02.19.Cell3.1.pdf";
 
-trial_num = 1;
-num_points = 100000; # maximum number of points to plot
+trial_num = parsed_args["trial-num"]
+num_points = parsed_args["num-points"]
 
 ################################################################################
 # Open the HDF file and read the data into a DataFrame. 
