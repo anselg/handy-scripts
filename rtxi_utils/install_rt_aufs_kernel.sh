@@ -22,18 +22,18 @@
 
 if ! id | grep -q root; then
   echo "Must run script as root; try again with sudo ./install_rt_kernel.sh"
-	exit
+  exit
 fi
 
 # Export environment variables
 echo  "----->Setting up variables"
-export linux_version=3.18.20
+export linux_version=4.1.18
 export linux_tree=/opt/linux-$linux_version
 
-export xenomai_version=3.0.1
+export xenomai_version=3.0.2
 export xenomai_root=/opt/xenomai-$xenomai_version
 
-export aufs_version=3.18
+export aufs_version=4.1
 export aufs_root=/opt/aufs-$aufs_version
 
 export scripts_dir=`pwd`
@@ -56,8 +56,8 @@ fi
 # Download essentials
 echo  "----->Downloading Linux kernel"
 cd $opt
-wget --no-check-certificate https://www.kernel.org/pub/linux/kernel/v3.x/linux-$linux_version.tar.gz
-tar xf linux-$linux_version.tar.gz
+wget --no-check-certificate https://www.kernel.org/pub/linux/kernel/v4.x/linux-$linux_version.tar.xz
+tar xf linux-$linux_version.tar.xz
 
 echo  "----->Downloading Xenomai"
 wget --no-check-certificate http://xenomai.org/downloads/xenomai/stable/xenomai-$xenomai_version.tar.bz2
@@ -73,18 +73,23 @@ fi
 # Patch kernel
 echo  "----->Patching aufs kernel"
 cd $opt
-git clone git://git.code.sf.net/p/aufs/aufs3-standalone aufs-$aufs_version
+git clone git://github.com/sfjro/aufs4-standalone.git aufs-$aufs_version
 cd $aufs_root
 git checkout origin/aufs$aufs_version
 cd $linux_tree
-patch -p1 < $aufs_root/aufs3-kbuild.patch && \
-patch -p1 < $aufs_root/aufs3-base.patch && \
-patch -p1 < $aufs_root/aufs3-mmap.patch && \
-patch -p1 < $aufs_root/aufs3-standalone.patch
+patch -p1 < $aufs_root/aufs4-kbuild.patch && \
+patch -p1 < $aufs_root/aufs4-base.patch && \
+patch -p1 < $aufs_root/aufs4-mmap.patch && \
+patch -p1 < $aufs_root/aufs4-standalone.patch
 cp -r $aufs_root/Documentation $linux_tree
 cp -r $aufs_root/fs $linux_tree
 cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/uapi/linux/
 cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/linux/
+
+# Download kernel config
+wget http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.1.18-wily/linux-image-4.1.18-040118-generic_4.1.18-040118.201602160131_amd64.deb
+dpkg-deb -x linux-image-4.1.18-040118-generic_4.1.18-040118.201602160131_amd64.deb linux-image
+cp linux-image/boot/config-$linux_version-* $linux_tree/.config
 
 echo  "----->Patching xenomai onto kernel"
 cd $linux_tree
@@ -102,7 +107,7 @@ fi
 # Compile kernel
 echo  "----->Compiling kernel"
 cd $linux_tree
-export CONCURRENCY_LEVEL=$(grep -c ^processor /proc/cpuinfo)
+export CONCURRENCY_LEVEL=$(nproc)
 fakeroot make-kpkg --initrd --append-to-version=-xenomai-$xenomai_version-aufs --revision $(date +%Y%m%d) kernel-image kernel-headers modules
 
 if [ $? -eq 0 ]; then
@@ -154,6 +159,8 @@ else
 	echo  "----->User library installation failed"
 	exit
 fi
+
+exit
 
 # Setting up user permissions
 echo  "----->Setting up user/group"
