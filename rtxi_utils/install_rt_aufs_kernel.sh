@@ -95,6 +95,7 @@ echo  "----->Patching xenomai onto kernel"
 cd $linux_tree
 $xenomai_root/scripts/prepare-kernel.sh --arch=x86_64 --adeos=$xenomai_root/kernel/cobalt/arch/x86/patches/ipipe-core-$linux_version-x86-?.patch --linux=$linux_tree
 yes "" | make oldconfig
+#yes "" | make localmodconfig
 make menuconfig
 
 if [ $? -eq 0 ]; then
@@ -116,6 +117,8 @@ else
 	echo  "----->Kernel compilation failed."
 	exit
 fi
+
+exit
 
 # Install compiled kernel
 echo  "----->Installing compiled kernel"
@@ -149,7 +152,7 @@ if [ -d "/usr/xenomai" ]; then
 	mv /usr/xenomai /usr/xenomai-$(date +%F_%T)
 fi
 cd $build_root
-$xenomai_root/configure --with-core=cobalt --enable-pshared --enable-smp --enable-x86-vsyscall --enable-dlopen-libs
+$xenomai_root/configure --with-core=cobalt --enable-pshared --enable-smp --enable-x86-vsyscall --enable-dlopen-libs --enable-lores-timer
 make -s
 sudo make install
 
