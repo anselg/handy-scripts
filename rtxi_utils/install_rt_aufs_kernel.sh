@@ -87,6 +87,7 @@ cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/uapi/linux/
 cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/linux/
 
 # Download kernel config
+cd $opt
 wget http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.1.18-wily/linux-image-4.1.18-040118-generic_4.1.18-040118.201602160131_amd64.deb
 dpkg-deb -x linux-image-4.1.18-040118-generic_4.1.18-040118.201602160131_amd64.deb linux-image
 cp linux-image/boot/config-$linux_version-* $linux_tree/.config
