@@ -25,20 +25,20 @@ cd $linux_tree
 patch -p1 < ../patch-4.4.1-rt6.patch
 
 # Patch aufs
-echo  "----->Patching aufs kernel"
-git clone https://github.com/sfjro/aufs4-standalone.git aufs-$aufs_version
-export aufs_root="aufs-${aufs_version}"
+#echo  "----->Patching aufs kernel"
+#git clone https://github.com/sfjro/aufs4-standalone.git aufs-$aufs_version
+#export aufs_root="aufs-${aufs_version}"
 
-cd $aufs_root
-git checkout origin/aufs$aufs_version
-patch -p1 < $aufs_root/aufs4-kbuild.patch && \
-patch -p1 < $aufs_root/aufs4-base.patch && \
-patch -p1 < $aufs_root/aufs4-mmap.patch && \
-patch -p1 < $aufs_root/aufs4-standalone.patch
-cp -r $aufs_root/Documentation $linux_tree
-cp -r $aufs_root/fs $linux_tree
-cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/uapi/linux/
-cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/linux/
+#cd $aufs_root
+#git checkout origin/aufs$aufs_version
+#patch -p1 < $aufs_root/aufs4-kbuild.patch && \
+#patch -p1 < $aufs_root/aufs4-base.patch && \
+#patch -p1 < $aufs_root/aufs4-mmap.patch && \
+#patch -p1 < $aufs_root/aufs4-standalone.patch
+#cp -r $aufs_root/Documentation $linux_tree
+#cp -r $aufs_root/fs $linux_tree
+#cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/uapi/linux/
+#cp $aufs_root/include/uapi/linux/aufs_type.h $linux_tree/include/linux/
 
 # build the kernel
 cd $linux_tree

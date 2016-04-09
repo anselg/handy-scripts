@@ -8,6 +8,12 @@ cd ~/
 if [ -f ".vimrc" ]; then
 	cp .vimrc .vimrc-$(date +%Y%m%d)
 fi
+
+if ! [ -d "~/.vim/plugin/" ]; then
+	mkdir -p "~/.vim/plugin/"
+fi
+wget https://raw.githubusercontent.com/dpc/vim-smarttabs/master/plugin/smarttabs.vim > ~/.vim/plugin/
+
 echo "set background=dark
 set title
 set titlestring=%t
@@ -15,10 +21,15 @@ set tabstop=3
 set shiftwidth=3
 set smarttab
 set smartindent
+set cindent
+set cinoptions=(0,u0,U0
 set hlsearch
 set incsearch
 set showmatch
-syntax on" > ~/.vimrc
+set wildmenu
+
+syntax on
+filetype plugin indent on" > ~/.vimrc
 
 
 ###############################################################################
