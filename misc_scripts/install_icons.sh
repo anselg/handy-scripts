@@ -13,7 +13,8 @@ git clone https://github.com/numixproject/numix-icon-theme-circle
 git clone https://github.com/numixproject/numix-folders
 
 sudo rsync -Prad numix-icon-theme/Numix /usr/share/icons/Numix
-sudo rsync -Prad numix-icon-theme-circle/Numix-Circle /usr/share/icons/Numix-Cirlce
+sudo rsync -Prad numix-icon-theme-circle/Numix-Circle /usr/share/icons/Numix-Circle
 sudo ./numix-folders/numix-folders
 
-
+mkdir -p ~/Projects
+gvfs-set-attribute ~/Projects/ -t string metadata::custom-icon-name folder-projects
