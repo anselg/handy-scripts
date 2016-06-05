@@ -18,3 +18,11 @@ git clone https://github.com/numixproject/numix-gtk-theme numix-theme
 cd numix-theme
 make && sudo make install
 cd ../
+
+# set a theme
+gsettings set org.gnome.desktop.interface gtk-theme "Arc"
+gsettings set org.gnome.desktop.wm.preferences theme "Arc"
+
+#gsettings set org.cinnamon.desktop.interface gtk-theme "Arc"
+#gsettings set org.cinnamon.desktop.interface gtk-theme "Arc"
+#gsettings set org.cinnamon.theme theme "Arc" ???

@@ -18,3 +18,6 @@ sudo ./numix-folders/numix-folders
 
 mkdir -p ~/Projects
 gvfs-set-attribute ~/Projects/ -t string metadata::custom-icon-name folder-projects
+
+gsettings set org.gnome.desktop.interface icon-theme "Numix-Circle"
+#gsettings set org.cinnamon.desktop.interface icon-theme "Numix-Circle"
