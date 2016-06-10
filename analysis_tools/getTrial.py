@@ -33,7 +33,7 @@ def getTrialLength(f, n):
 
 def getChannelFrame(f, n):
     meta = [ item for item in f["/Trial" + str(n) + "/Synchronous Data"] ]
-    headers = meta[0:3]
+    headers = [ item.split(" : ")[1] for item in meta[0:3] ]
     data = f["/Trial" + str(n) + "/Synchronous Data/" + str(meta[len(meta)-1])]
     frame = pd.DataFrame(data=np.vstack(data), columns=headers)
     frame["Time (ms)"] = range(0, len(frame))
@@ -42,24 +42,22 @@ def getChannelFrame(f, n):
 hdf = h5.File(filename, 'r')
 
 getNumTrials(hdf)
-#data = getTrial(hdf, trialnum)
 
 period = getPeriod(hdf, trialnum) # in ns
 downsampling = getDownsamplingRate(hdf, trialnum)
 length = getTrialLength(hdf, trialnum) # in ns
 frame = getChannelFrame(hdf, trialnum)
+meltyframe = pd.melt(frame, "Time (ms)")
 
 hdf.close()
 
 # gennerate plots
 with PdfPages(plotname) as pdf:
-    p = sb.lmplot('Time (ms)', '3 Optical Clamp Protocol 11 : LED Output (V)', data=frame, fit_reg=False)
+    p = sb.lmplot(x="Time (ms)", y="value", hue="variable", data=meltyframe, size=4, aspect=1.5)
     pdf.savefig(p.fig)
-    p = sb.lmplot('Time (ms)', '2 Optical Clamp Protocol 11 : Voltage Output (V)', data=frame, fit_reg=False)
-    pdf.savefig(p.fig)
-    p = sb.lmplot('2 Optical Clamp Protocol 11 : Voltage Output (V)', '1 Optical Clamp Protocol 11 : Current Input (A)', data=frame, fit_reg=False)
-    pdf.savefig(p.fig)
-    p = sb.lmplot('3 Optical Clamp Protocol 11 : LED Output (V)', '1 Optical Clamp Protocol 11 : Current Input (A)', data=frame, fit_reg=False)
-    pdf.savefig(p.fig)
+
+    for field in meltyframe['variable'].unique():
+        p = sb.lmplot(x="Time (ms)", y=field, aspect=1.5, size=4, data=frame)
+        pdf.savefig(p.fig)
 
 
