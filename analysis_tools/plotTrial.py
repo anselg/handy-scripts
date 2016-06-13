@@ -53,11 +53,10 @@ hdf.close()
 
 # gennerate plots
 with PdfPages(plotname) as pdf:
-    p = sb.lmplot(x="Time (ms)", y="value", hue="variable", data=meltyframe, size=4, aspect=1.5, fit_reg=False)
-    pdf.savefig(p.fig)
+#    p = sb.lmplot(x="Time (ms)", y="value", hue="variable", data=meltyframe, size=5, aspect=2, fit_reg=False)
+#    pdf.savefig(p.fig)
 
     for field in meltyframe['variable'].unique():
-        p = sb.lmplot(x="Time (ms)", y=field, aspect=1.5, size=4, data=frame, fit_reg=False)
+        p = sb.lmplot(x="Time (ms)", y=field, aspect=2, size=5, data=frame, fit_reg=False)
         pdf.savefig(p.fig)
-
 
