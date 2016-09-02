@@ -128,12 +128,14 @@ kernel = getKernel()
 vendor, model, driver = getGpu()
 frequency = 10.0
 
-col1 = ["Computer", "Kernel", "CPU", "GPU", "RT Freq"]
+col1 = ["Computer", "Kernel", "CPU", "GPU Vendor", "GPU Model", "GPU Driver", "RT Freq"]
 col2 = [
     hostname + " (" + distro + ")",
     kernel,
     cpu,
-    vendor + " " + model + " (" + driver + ")",
+    vendor, 
+    model,
+    driver,
     str(frequency) + " kHz"]
 
 
@@ -141,7 +143,7 @@ col2 = [
 # Generate plot
 ##########################################################################
 
-f, ax = plt.subplots(2, gridspec_kw={'height_ratios': [1, 3]}, figsize=(8, 6))
+f, ax = plt.subplots(2, gridspec_kw={'height_ratios': [1, 2.5]}, figsize=(8, 8))
 ax[0].axis('tight')
 ax[0].axis('off')
 table = ax[0].table(cellText=np.transpose(
