@@ -201,12 +201,14 @@ distro = getDistro()
 kernel = getKernel()
 vendor, model, driver = getGpu()
 
-col1 = ["Computer", "Kernel", "CPU", "GPU", "DAQ", "RT Freq"]
+col1 = ["Computer", "Kernel", "CPU", "GPU Vendor", "GPU Model", "GPU Driver", "DAQ", "RT Freq"]
 col2 = [
     hostname + " (" + distro + ")",
     kernel,
     cpu,
-    vendor + " " + model + " (" + driver + ")",
+    vendor, 
+    model,
+    driver,
     daq,
     str(frequency) + " kHz"]
 
@@ -215,15 +217,17 @@ col2 = [
 # Generate plot
 ##########################################################################
 
-f, ax = plt.subplots(4, sharex=True, figsize=(8, 12))
-ax[0].axis('tight')
+f, ax = plt.subplots(4, sharex=True, figsize=(8.5, 11))
+#ax[0].axis('tight')
 ax[0].axis('off')
 table = ax[0].table(cellText=np.transpose(
-    np.vstack([col1, col2])), loc='center')
+    np.vstack([col1, col2])), loc='center', fontsize=24)
 celld = table.get_celld()
-[celld[x, y].set_width(.15) for x, y in celld if y == 0]
-[celld[x, y].set_width(.45) for x, y in celld if y == 1]
-table.scale(1.5, 1.5)
+[celld[x, y].set_width(.2) for x, y in celld if y == 0]
+[celld[x, y].set_width(.6) for x, y in celld if y == 1]
+#celld[3, 0].set_height(.5)
+#celld[3, 1].set_height(.5)
+table.scale(1.2, 1.2)
 frame.plot(ax=ax[1], kind="scatter", x='Time (s)',
            y='Comp Time (us)', alpha=.2, marker=".", edgecolor='none')
 ax[1].set_ylabel("Comp Time (us)")
@@ -236,5 +240,5 @@ frame.plot(ax=ax[3], kind="scatter", x='Time (s)',
 ax[3].set_ylabel("RT Jitter (us)")
 ax[3].set_xlabel("Time (s)")
 f.tight_layout()
-plt.savefig(plotname, dpi=300)
+plt.savefig(plotname, dpi=80)
 plt.close()
