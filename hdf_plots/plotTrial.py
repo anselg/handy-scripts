@@ -6,14 +6,12 @@
 
 import sys
 import os
-import re
 import h5py as h5
 import numpy as np
 import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
 import operator
-import subprocess
 
 
 ##########################################################################
