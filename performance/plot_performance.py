@@ -211,23 +211,16 @@ col2 = [
     driver,
     daq,
     str(frequency) + " kHz"]
+col2 = [ [value] for value in col2 ]
 
 
 ##########################################################################
 # Generate plot
 ##########################################################################
 
-f, ax = plt.subplots(4, sharex=True, figsize=(8.5, 11))
-#ax[0].axis('tight')
+f, ax = plt.subplots(4, sharex=True, figsize=(8.5, 11), gridspec_kw={'height_ratios': [.7,1,1,1]})
 ax[0].axis('off')
-table = ax[0].table(cellText=np.transpose(
-    np.vstack([col1, col2])), loc='center', fontsize=24)
-celld = table.get_celld()
-[celld[x, y].set_width(.2) for x, y in celld if y == 0]
-[celld[x, y].set_width(.6) for x, y in celld if y == 1]
-#celld[3, 0].set_height(.5)
-#celld[3, 1].set_height(.5)
-table.scale(1.2, 1.2)
+table = ax[0].table(cellText=col2, rowLabels=col1, loc='center', colWidths=[.8], colLoc='right', bbox=[.1,0,.85,1])
 frame.plot(ax=ax[1], kind="scatter", x='Time (s)',
            y='Comp Time (us)', alpha=.2, marker=".", edgecolor='none')
 ax[1].set_ylabel("Comp Time (us)")

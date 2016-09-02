@@ -137,26 +137,23 @@ col2 = [
     model,
     driver,
     str(frequency) + " kHz"]
-
+col2 = [ [value] for value in col2 ]
 
 ##########################################################################
 # Generate plot
 ##########################################################################
 
-f, ax = plt.subplots(2, gridspec_kw={'height_ratios': [1, 2.5]}, figsize=(8, 8))
-ax[0].axis('tight')
+f, ax = plt.subplots(2, gridspec_kw={'height_ratios': [1, 2.5]}, figsize=(8, 7))
 ax[0].axis('off')
-table = ax[0].table(cellText=np.transpose(
-    np.vstack([col1, col2])), loc='center')
-celld = table.get_celld()
-[celld[x, y].set_width(.10) for x, y in celld if y == 0]
-[celld[x, y].set_width(.40) for x, y in celld if y == 1]
-table.scale(1.5, 1.5)
+table = ax[0].table(cellText=col2, rowLabels=col1, loc='center', colWidths=[.8], colLoc='right', bbox=[.1,0,.85,1])
 data.hist("Latency (us)", bins=50, ax=ax[1])
 ax[1].set_title("")
 ax[1].set_yscale('log')
 ax[1].set_ylabel('Count')
 ax[1].set_xlabel('Latency (us)')
+mean_latency = data['Latency (us)'].mean()
+std_latency = data['Latency (us)'].std()
+ax[1].table(cellText=[ [mean_latency], [std_latency] ], rowLabels=[ "Mean (us)", "Std Dev (us)" ], loc='center right', colWidths=[.2]*2)
 plt.tight_layout()
 plt.savefig(plotname, dpi=300)
 plt.close()
