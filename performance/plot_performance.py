@@ -201,31 +201,41 @@ distro = getDistro()
 kernel = getKernel()
 vendor, model, driver = getGpu()
 
-col1 = ["Computer", "Kernel", "CPU", "GPU Vendor", "GPU Model", "GPU Driver", "DAQ", "RT Freq"]
+col1 = [
+    "Computer",
+    "Kernel",
+    "CPU",
+    "GPU Vendor",
+    "GPU Model",
+    "GPU Driver",
+    "DAQ",
+    "RT Freq"]
 col2 = [
     hostname + " (" + distro + ")",
     kernel,
     cpu,
-    vendor, 
+    vendor,
     model,
     driver,
     daq,
     str(frequency) + " kHz"]
-col2 = [ [value] for value in col2 ]
+col2 = [[value] for value in col2]
 
 
 ##########################################################################
 # Generate plot
 ##########################################################################
 
-f, ax = plt.subplots(4, sharex=True, figsize=(8.5, 11), gridspec_kw={'height_ratios': [.7,1,1,1]})
+f, ax = plt.subplots(4, sharex=True, figsize=(8.5, 11),
+                     gridspec_kw={'height_ratios': [.7, 1, 1, 1]})
 ax[0].axis('off')
-table = ax[0].table(cellText=col2, rowLabels=col1, loc='center', colWidths=[.8], colLoc='right', bbox=[.1,0,.85,1])
+table = ax[0].table(cellText=col2, rowLabels=col1, loc='center',
+                    colWidths=[.8], colLoc='right', bbox=[.1, 0, .85, 1])
 frame.plot(ax=ax[1], kind="scatter", x='Time (s)',
            y='Comp Time (us)', alpha=.2, marker=".", edgecolor='none')
 ax[1].set_ylabel("Comp Time (us)")
 frame.plot(ax=ax[2], kind="scatter", x='Time (s)',
-           y='Real-time Period (us)', alpha=.2, marker=".", 
+           y='Real-time Period (us)', alpha=.2, marker=".",
            edgecolor='none')
 ax[2].set_ylabel("Real-time Period (us)")
 frame.plot(ax=ax[3], kind="scatter", x='Time (s)',
