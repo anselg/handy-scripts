@@ -1,8 +1,7 @@
 #! /bin/bash
 
 if ! [ -f ${HOME}/.clang-format ]; then 
-  #clang-format -style=mozilla -dump-config > .clang-format
-  cp clang-format  ~/.clang-format
+   clang-format -style=mozilla -dump-config > .clang-format
 fi
 
 find . -type f \( -name '*.h' -or -name '*.hpp' -or -name '*.c' -or -name '*.cpp' \) -exec sed -i "s/\/\/\t*\(.*\)$/\/\/\1/g" {} +
