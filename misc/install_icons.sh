@@ -17,7 +17,9 @@ sudo rsync -Prad numix-icon-theme-circle/Numix-Circle /usr/share/icons/Numix-Cir
 sudo ./numix-folders/numix-folders
 
 mkdir -p ~/Projects
+mkdir -p ~/Sync
 gvfs-set-attribute ~/Projects/ -t string metadata::custom-icon-name folder-projects
+gvfs-set-attribute ~/Sync/ -t string metadata::custom-icon-name folder-cloud
 
 gsettings set org.gnome.desktop.interface icon-theme "Numix-Circle"
 #gsettings set org.cinnamon.desktop.interface icon-theme "Numix-Circle"

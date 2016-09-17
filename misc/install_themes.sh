@@ -1,7 +1,8 @@
 #! /bin/bash
 
-sudo apt-get -y install nodejs npm automake libgtk-3-dev gnome-themes-standard \
-	ruby ruby-sass
+sudo apt-get -y install \
+  nodejs npm automake libgtk-3-dev gnome-themes-standard ruby ruby-sass \
+  inkscape
 
 if ! [ -f /bin/node ]; then sudo ln -s /bin/nodejs /bin/node; fi
 
@@ -12,6 +13,11 @@ git clone https://github.com/horst3180/arc-theme
 cd arc-theme
 npm install && ./autogen.sh --prefix=/usr && gulp && make && sudo make install
 cd ../
+
+# install adampta theme
+git clone https://github.com/tista500/adapta
+cd adapta
+./autogen-sh && make -j`nproc` && sudo make install
 
 # install numix theme (git)
 git clone https://github.com/numixproject/numix-gtk-theme numix-theme
