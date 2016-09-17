@@ -1,10 +1,13 @@
 #! /bin/bash
+set -e
 
 sudo apt-get -y install \
   nodejs npm automake libgtk-3-dev gnome-themes-standard ruby ruby-sass \
-  inkscape
+  ruby-bundler inkscape
 
-if ! [ -f /bin/node ]; then sudo ln -s /bin/nodejs /bin/node; fi
+if ! [ -f /use/bin/node ]; 
+  then sudo ln -s /usr/bin/nodejs /usr/bin/node
+fi
 
 sudo npm -g install gulp
 
@@ -18,6 +21,7 @@ cd ../
 git clone https://github.com/tista500/adapta
 cd adapta
 ./autogen-sh && make -j`nproc` && sudo make install
+cd ../
 
 # install numix theme (git)
 git clone https://github.com/numixproject/numix-gtk-theme numix-theme
