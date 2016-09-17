@@ -1,4 +1,5 @@
 #! /bin/bash
+set -e
 
 # install numix icons and set folder color
 
