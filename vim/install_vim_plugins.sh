@@ -6,7 +6,7 @@ sudo apt-get update && apt-get install -y \
   vim vim-ctrlp vim-fugitive vim-latexsuite vim-pathogen vim-scripts \
   vim-ultisnips vim-youcompleteme clang-format-3.8 colordiff vim-conque cream \
   powerline powerline-fonts vim-puppet vim-python-jedi git global doxygen \
-  vim-snippets
+  vim-snippets vim-syntastic
 
 # Note: vim-addons relied on system ruby, so if using rvm, be sure to use it.
 vim-addons install \
