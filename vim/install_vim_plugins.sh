@@ -11,8 +11,12 @@ sudo apt-get update && apt-get install -y \
 # Note: vim-addons relied on system ruby, so if using rvm, be sure to use it.
 vim-addons install \
   align alternate ctrlp detectindent doxygen-toolkit fugitive nerd-commenter \
-  pathogen powerline surround syntastic tabular latex-suite
+  pathogen powerline surround syntastic tabular latex-suite youcompleteme
 
 # Copy over the vimrc here to your home directory.
 [ -f ~/.vimrc ] && mv ~/.vimrc ~/.vimrc-bak
 cp vimrc ~/.vimrc
+
+# Copy over the ycm config (for handling rtxi paths)
+[ -f ~/.ycm_extra_conf.py ] && mv ~/.ycm_extra_conf.py ~/.ycm_extra_conf.py-bak
+cp ycm_extra_conf.py ~/.ycm_extra_conf.py 
