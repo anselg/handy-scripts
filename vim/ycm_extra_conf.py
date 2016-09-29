@@ -71,6 +71,11 @@ flags = [
     '-I/usr/local/qwt-6.1.2',
     '-I/usr/local/qwt-6.1.2/include',
     '-I/usr/xenomai/include',
+    '-I/usr/local/include/qarv-2',
+    '-I/usr/local/include/aravis-0.4',
+    '-I/usr/include/libxml2',
+    '-I/usr/include/glib-2.0',
+    '-I/usr/include/glib-2.0/include',
     '-nostdlib',
     '-std=c++11',
 ]
