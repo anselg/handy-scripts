@@ -15,8 +15,8 @@ set smartindent
 set hlsearch
 set incsearch
 set showmatch
-"set wildmenu
-"set wildignore=*.o,*~,*.pyc
+set wildmenu
+set wildignore=*.o,*~,*.pyc
 
 "pathogen
 "execute pathogen#infect()
@@ -29,6 +29,12 @@ let g:Powerline_symbols='fancy'
 
 "detectindent
 :autocmd BufReadPost * :DetectIndent
+
+"vim-taglist
+let Tlist_Compact_Format = 1
+let Tlist_GainFocus_On_ToggleOpen = 1
+let Tlist_Close_On_Select = 1
+nnoremap <C-l> :TlistToggle<CR>
 
 "nerd-commenter
 let g:NERDSpaceDelims=1
