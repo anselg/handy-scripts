@@ -3,7 +3,7 @@ set -e
 
 sudo apt-get -y install \
   nodejs npm automake libgtk-3-dev gnome-themes-standard ruby ruby-sass \
-  ruby-bundler inkscape
+  ruby-bundler inkscape parallel
 
 if ! [ -f /usr/bin/node ]; 
   then sudo ln -s /usr/bin/nodejs /usr/bin/node
@@ -20,7 +20,7 @@ cd ../
 # install adampta theme
 git clone https://github.com/tista500/adapta
 cd adapta
-./autogen.sh && make -j`nproc` && sudo make install
+./autogen.sh --enable-parallel && make -j`nproc` && sudo make install
 cd ../
 
 # install numix theme (git)
