@@ -138,7 +138,7 @@ int main(int argc,char *argv[]) {
 	palette.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(255, 255, 255));
 
 	/* Create GUI Objects */
-   QApplication::setDesktopSettingsAware(false);
+	QApplication::setDesktopSettingsAware(true);
 //	QApplication::setGraphicsSystem("raster");
 	QApplication *app = new QApplication(argc,argv);
 	app->setStyle("cleanlooks");
