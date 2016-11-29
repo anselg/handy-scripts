@@ -11,10 +11,12 @@ custom
 
 git clone https://github.com/numixproject/numix-icon-theme
 git clone https://github.com/numixproject/numix-icon-theme-circle
+git clone https://github.com/numixproject/numix-icon-theme-square
 git clone https://github.com/numixproject/numix-folders
 
 sudo rsync -Prad numix-icon-theme/Numix/ /usr/share/icons/Numix
 sudo rsync -Prad numix-icon-theme-circle/Numix-Circle/ /usr/share/icons/Numix-Circle
+sudo rsync -Prad numix-icon-theme-square/Numix-Square/ /usr/share/icons/Numix-Square
 sudo ./numix-folders/numix-folders
 
 sudo sed -i 's/PUBLICSHARE/#PUBLICSHARE/g' /etc/xdg/user-dirs.defaults
