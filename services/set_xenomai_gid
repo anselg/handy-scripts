@@ -29,9 +29,9 @@
 if [ -c /dev/rtheap ] || [ -d /dev/rtdm ]; then
 	XENOMAI_GID=$(getent group xenomai | cut -d":" -f3)
 	XENOMAI_VERSION=$(bash /usr/xenomai/bin/xeno-config --version)
-	if [[ "$XENOMAI_VERSION" =~ "3." ]]; then
+	if [[ "$XENOMAI_VERSION" =~ "^3." ]]; then
 		echo $XENOMAI_GID > /sys/module/xenomai/parameters/allowed_group
-	elif [[ "$XENOMAI_VERSION" =~ "2." ]]; then
+	elif [[ "$XENOMAI_VERSION" =~ "^2." ]]; then
 		echo $XENOMAI_GID > /sys/module/xeno_nucleus/parameters/xenomai_gid
 	fi
 
