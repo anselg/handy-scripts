@@ -12,6 +12,7 @@ alias ls='ls --color=auto'
 alias sl='ls -r'
 alias grep='grep --color=auto'
 alias happymake="make -j`nproc` && sudo make install"
+alias superupgrade="sudo bash -c 'apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade && apt-get -y autoremove && apt-get clean && update-grub'"
 
 # zsh fixes
 alias scp="noglob scp"
