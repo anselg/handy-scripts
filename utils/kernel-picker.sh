@@ -2,22 +2,7 @@
 set -eu
 
 #
-# Globals
-#
-
-distro=$(lsb_release -sd | tr -d \")
-
-kernelstring=$(grep "menuentry" /boot/grub/grub.cfg | grep -v "recovery" | \
-               sed -n "s/\s*menuentry '${distro}, with Linux \(.*\)' --class .*/\1/p")
-
-kernels=()
-for kernel in ${kernelstring[@]}; do
-  kernels+=("${kernel}")
-done
-
-
-#
-# Functions
+# Color prompts
 #
 
 show_error() {
@@ -46,6 +31,11 @@ show_listitem() {
   echo -e "\033[0;37m$@\033[0m"
 }
 
+
+#
+# Functions
+#
+
 function set_default_kernel() {
   show_info "Setting default kernel to $1."
   sudo sed -i.bak.$(date +%Y%m%d-%I%M%S) \
@@ -58,7 +48,26 @@ function set_default_kernel() {
   show_info "Updating /boot/grub/grub.cfg to reflect new defaults."
   sudo update-grub
   show_success "Done."
-} 
+}
+
+
+#
+# Globals
+#
+
+distro=$(lsb_release -sd | tr -d \")
+
+# Get list of kernels from grub config file.
+kernelstring=$(grep "menuentry" /boot/grub/grub.cfg | grep -v "recovery" | \
+               sed -n "s/\s*menuentry '${distro}, with Linux \(.*\)' --class .*/\1/p")
+if [[ "${kernelstring}" = "" ]]; then
+  show_error "Unable to get kernel list. Exiting."
+  exit 2
+fi
+kernels=()
+for kernel in ${kernelstring[@]}; do
+  kernels+=("${kernel}")
+done
 
 
 #
