@@ -1,6 +1,25 @@
 #! /bin/bash
 set -eu
 
+#
+# Globals
+#
+
+distro=$(lsb_release -sd | tr -d \")
+
+kernelstring=$(grep "menuentry" /boot/grub/grub.cfg | grep -v "recovery" | \
+               sed -n "s/\s*menuentry '${distro}, with Linux \(.*\)' --class .*/\1/p")
+
+kernels=()
+for kernel in ${kernelstring[@]}; do
+  kernels+=("${kernel}")
+done
+
+
+#
+# Functions
+#
+
 show_error() {
   echo -e "\033[1;31m$@\033[m" 1>&2
 }
@@ -30,7 +49,7 @@ show_listitem() {
 function set_default_kernel() {
   show_info "Setting default kernel to $1."
   sudo sed -i.bak.$(date +%Y%m%d-%I%M%S) \
-    "s/GRUB_DEFAULT=.*/GRUB_DEFAULT='Advanced options for Ubuntu>Ubuntu, with Linux $1'/g" \
+    "s/GRUB_DEFAULT=.*/GRUB_DEFAULT='Advanced options for ${distro}>${distro}, with Linux $1'/g" \
     /etc/default/grub
   show_success "Done."
   show_info "The old config file is backed up in /etc/default/."
@@ -41,13 +60,10 @@ function set_default_kernel() {
   show_success "Done."
 } 
 
-kernelstring=$(grep "menuentry" /boot/grub/grub.cfg | grep -v "recovery" | \
-               sed -n "s/\s*menuentry 'Ubuntu, with Linux \(.*\)' --class .*/\1/p")
 
-kernels=()
-for kernel in ${kernelstring[@]}; do
-  kernels+=("${kernel}")
-done
+#
+# Main
+#
 
 show_question "Which kernel should be the default?"
 select kernel in "${kernels[@]}"; do
