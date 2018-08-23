@@ -55,7 +55,7 @@ function set_default_kernel() {
 # Main
 #
 
-distro=$(lsb_release -sd | tr -d \")
+distro=$(lsb_release -si)
 
 # Get list of kernels from grub config file.
 kernelstring=$(grep "menuentry" /boot/grub/grub.cfg | \
