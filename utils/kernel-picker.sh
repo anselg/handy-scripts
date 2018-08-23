@@ -96,6 +96,14 @@ select kernel in "${kernels[@]}"; do
       set_default_kernel "$kernel"
       break
       ;;
+    '3.18.20-xenomai-2.6.5-aufs'|'3.18.20-xenomai-2.6.5')
+      set_default_kernel "$kernel"
+      break
+      ;;
+    '4.1.18-xenomai-3.0.2-aufs'|'4.1.18-xenomai-3.0.2')
+      set_default_kernel "$kernel"
+      break
+      ;;
     '4.9.51-xenomai-3.0.5-aufs'|'4.9.51-xenomai-3.0.5')
       set_default_kernel "$kernel"
       break
