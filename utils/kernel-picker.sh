@@ -60,7 +60,7 @@ distro=$(lsb_release -si)
 # Get list of kernels from grub config file.
 kernelstring=$(grep "menuentry" /boot/grub/grub.cfg | \
                grep -v "recovery" | grep -v "fallback" | \
-               sed -n "s/\s*menuentry '${distro}, with Linux \([0-9\.]\+-xenomai-[0-9\.]\+[-aufs]*\)/\1/p")
+               sed -n "s/\s*menuentry '${distro}, with Linux \([0-9\.]\+-xenomai-[0-9\.]\+[-aufs]*\) --class .*/\1/p")
 if [[ "${kernelstring}" = "" ]]; then
   show_error "Unable to get kernel list. Exiting."
   exit 2
