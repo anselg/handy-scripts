@@ -58,7 +58,8 @@ function set_default_kernel() {
 distro=$(lsb_release -sd | tr -d \")
 
 # Get list of kernels from grub config file.
-kernelstring=$(grep "menuentry" /boot/grub/grub.cfg | grep -v "recovery" | \
+kernelstring=$(grep "menuentry" /boot/grub/grub.cfg | \
+               grep -v "recovery" | grep -v "fallback" | \
                sed -n "s/\s*menuentry '${distro}, with Linux \(.*\)' --class .*/\1/p")
 if [[ "${kernelstring}" = "" ]]; then
   show_error "Unable to get kernel list. Exiting."
