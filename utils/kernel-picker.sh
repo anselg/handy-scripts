@@ -52,7 +52,7 @@ function set_default_kernel() {
 
 
 #
-# Globals
+# Main
 #
 
 distro=$(lsb_release -sd | tr -d \")
@@ -70,48 +70,8 @@ for kernel in ${kernelstring[@]}; do
   kernels+=("${kernel}")
 done
 
-
-#
-# Main
-#
-
 show_question "Which kernel should be the default?"
 select kernel in "${kernels[@]}"; do
-  # Only allow specific kernel versions, so all extant Xenomai builds need to
-  # have their version names hard-coded here.
-  case "$kernel" in
-    '4.15.0-32-generic')
-      set_default_kernel "$kernel"
-      break
-      ;;
-    '3.8.13-xenomai-2.6.4-aufs'|'3.8.13-xenomai-2.6.4')
-      set_default_kernel "$kernel"
-      break
-      ;;
-    '3.14.17-xenomai-2.6.4-aufs'|'3.14.17-xenomai-2.6.4')
-      set_default_kernel "$kernel"
-      break
-      ;;
-    '3.14.44-xenomai-2.6.5-aufs'|'3.14.44-xenomai-2.6.5')
-      set_default_kernel "$kernel"
-      break
-      ;;
-    '3.18.20-xenomai-2.6.5-aufs'|'3.18.20-xenomai-2.6.5')
-      set_default_kernel "$kernel"
-      break
-      ;;
-    '4.1.18-xenomai-3.0.2-aufs'|'4.1.18-xenomai-3.0.2')
-      set_default_kernel "$kernel"
-      break
-      ;;
-    '4.9.51-xenomai-3.0.5-aufs'|'4.9.51-xenomai-3.0.5')
-      set_default_kernel "$kernel"
-      break
-      ;;
-    *)
-      show_error "Kernel $kernel is not supported."
-      show_warning "Permitted kernels must be manually added to this script."
-      break
-      ;;
-  esac
+  set_default_kernel "$kernel"
+  break
 done
