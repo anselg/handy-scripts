@@ -77,6 +77,8 @@ done
 
 show_question "Which kernel should be the default?"
 select kernel in "${kernels[@]}"; do
+  # Only allow specific kernel versions, so all extant Xenomai builds need to
+  # have their version names hard-coded here.
   case "$kernel" in
     '4.15.0-32-generic')
       set_default_kernel "$kernel"
