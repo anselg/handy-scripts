@@ -72,6 +72,11 @@ done
 
 show_question "Which kernel should be the default?"
 select kernel in "${kernels[@]}"; do
-  set_default_kernel "$kernel"
-  break
+  if [[ "${kernel}" == "" ]]; then
+    show_error "Something went wrong. Make sure that you enter the right number."
+    exit 2
+  else
+    set_default_kernel "$kernel"
+    break
+  fi
 done
